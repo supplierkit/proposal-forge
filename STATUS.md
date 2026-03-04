@@ -1,70 +1,79 @@
 # Status Report
 
-## Current Phase: Phase 1 — Idea Generation & Validation (CHECKPOINT)
+## Current Phase: Phase 2 — Architecture & Technical Design (CHECKPOINT)
 
 **Date:** 2026-03-03
 
 ## What Was Done
 
 ### Phase 0 (Complete)
-1. **CLAUDE.md created** — Full operational guidance document.
-2. **Git repository initialized** — On branch `claude/init-project-WJE5g`.
-3. **.gitignore created** — Excludes secrets, deps, and build artifacts.
+- Git repo, .gitignore, CLAUDE.md initialized.
 
-### Phase 1 (Complete — Awaiting Approval)
-1. **Researched 4 business ideas** with comprehensive market analysis:
-   - Hotel Group Sales Proposal Automation (Score: **44/50**)
-   - Revenue Management Intelligence (Score: **36/50**)
-   - AI Content Localization for Travel (Score: **34/50**)
-   - Supplier Content Syndication (Score: **33/50**)
+### Phase 1 (Complete — Approved)
+- 4 business ideas researched and scored. **ProposalForge** selected (hotel group sales proposal automation).
+- VALIDATION.md created with demand signals, competitor pricing, and ITB Berlin overlap.
 
-2. **For each idea, validated:**
-   - Competitor pricing (with specific ACV ranges)
-   - Market size and growth rates
-   - Quantified pain points with revenue impact
-   - ITB Berlin 2026 exhibitor overlap
-   - Build feasibility assessment
+### Phase 2 (Complete — Awaiting Approval)
 
-3. **Recommendation: Hotel Group Sales Proposal Automation ("ProposalForge")**
-   - 6+ competitors with published pricing ($150/mo to $50K+/yr) = proven spending category
-   - Group bookings = 30-40% of hotel revenue; hotels lose 25-40% of leads to slow proposals
-   - MVP requires ZERO external integrations (standalone tool), buildable in 4-6 weeks
-   - 500+ MICE-relevant exhibitors at ITB Berlin 2026
-   - Natural viral loop: every proposal sent markets the product
-   - Clear path to $5M ARR via mid-market hotel groups
+1. **ARCHITECTURE.md** — Full system architecture including:
+   - System architecture diagram (Mermaid) — client, application, data, and external service layers
+   - Complete data model — 13 entities with all fields and relationships (Organization, Property, RoomType, FunctionSpace, CateringPackage, Lead, Contact, Template, Proposal, ProposalSection, ProposalView, User, Subscription, Activity)
+   - REST API design — 30+ endpoints with auth, rate limiting, response format, and RBAC
+   - Third-party integration plan (Supabase, Stripe, Claude API, Resend, Vercel)
+   - Infrastructure plan with environment strategy and cost estimates (~$130-330/month at launch)
+   - Security model — JWT auth, RBAC (4 roles), RLS multi-tenancy, GDPR compliance, input validation
+
+2. **TECH_STACK.md** — Technology choices with justifications:
+   - Next.js 15 (App Router) + TypeScript (strict) + Tailwind CSS + shadcn/ui
+   - Supabase (PostgreSQL + Auth + Storage + Realtime)
+   - Claude API for AI generation, Stripe for billing, Resend for email
+   - Vercel for hosting, Vitest + Playwright for testing
+   - All alternatives considered and reasoning documented
+
+3. **MVP_SCOPE.md** — Feature scope with explicit boundaries:
+   - **ONE feature**: AI-powered interactive proposal creation and delivery
+   - 10 MVP features defined with acceptance criteria
+   - Explicit out-of-scope list (PMS integration, Cvent, e-signatures, etc.)
+   - 4-week build order broken into weekly milestones
+   - Success criteria (< 10 min to first proposal, > 80% test coverage)
 
 ## Files Created or Modified
 
 | File | Action | Description |
 |---|---|---|
-| `CLAUDE.md` | Created (Phase 0) | Complete operational guidance and project rules |
-| `.gitignore` | Created (Phase 0) | Git exclusion rules |
-| `STATUS.md` | Updated (Phase 1) | This status report |
-| `VALIDATION.md` | Created (Phase 1) | Full demand validation with 4 scored ideas |
+| `ARCHITECTURE.md` | Created | System architecture, data model, API design, security model |
+| `TECH_STACK.md` | Created | Technology choices with justifications |
+| `MVP_SCOPE.md` | Created | MVP feature scope, build order, success criteria |
+| `STATUS.md` | Updated | This status report |
 
-## External Services or APIs Integrated
+## External Services Planned
 
-None yet.
+| Service | Purpose | Cost |
+|---------|---------|------|
+| Supabase Pro | Database, Auth, Storage | $25/month |
+| Vercel Pro | Hosting | $20/month |
+| Claude API | AI proposal generation | ~$50-200/month |
+| Resend Pro | Email delivery | $20/month |
+| Stripe | Billing | 2.9% + $0.30/txn |
 
-## Dependencies Added
+## Dependencies Planned
 
-None yet.
+See TECH_STACK.md for full list. Key packages: Next.js 15, Supabase client, Stripe SDK, Zod, shadcn/ui components, @react-pdf/renderer, Vitest, Playwright.
 
 ## Risks
 
-| Risk | Severity | Notes |
+| Risk | Severity | Mitigation |
 |---|---|---|
-| Cvent dominates enterprise MICE | Medium | We target mid-market (5-50 properties) where Cvent is overkill |
-| Proposales is a direct competitor | Medium | Differentiate via AI generation, better analytics, multi-property focus |
-| Hotels slow to adopt tech | Medium | Design for < 5 min onboarding, immediate ROI |
-| Core concept is replicable | Medium | Build moat through data, integrations, workflow lock-in |
+| AI generation quality for proposals | Medium | Human-in-the-loop editing; test with real hotel data |
+| Supabase RLS complexity | Low | Well-documented pattern; test with multi-tenant scenarios |
+| Scope creep during build | Medium | MVP_SCOPE.md explicitly lists what's out of scope |
+| 4-week timeline ambitious | Medium | Core product (weeks 1-2) delivers value; week 3-4 is business layer and polish |
 
 ## Next Steps
 
-- **AWAITING HUMAN APPROVAL** of recommended idea (Hotel Group Sales Proposal Automation)
-- Upon approval, proceed to **Phase 2: Architecture & Technical Design**
-  - System architecture (Mermaid diagrams)
-  - Data model design
-  - API design
-  - Tech stack finalization
-  - MVP feature scope definition
+- **AWAITING HUMAN APPROVAL** of architecture, tech stack, and MVP scope
+- Upon approval, proceed to **Phase 3: Build MVP**
+  - Week 1: Foundation (project setup, auth, property management)
+  - Week 2: Core product (leads, AI proposals, proposal viewer)
+  - Week 3: Business layer (analytics, billing, dashboard, onboarding, landing page)
+  - Week 4: Testing, security review, staging deploy
