@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     let userId: string | undefined;
     let userEmail: string | undefined;
-    if (process.env.NEXT_PUBLIC_AUTH_DISABLED === "true") {
+    if (process.env.NEXT_PUBLIC_AUTH_DISABLED !== "false") {
       return apiError("Billing is disabled in demo mode", 403);
     }
 
