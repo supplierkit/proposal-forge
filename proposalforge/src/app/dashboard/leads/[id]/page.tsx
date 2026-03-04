@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowLeft } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
+import { AUTH_DISABLED } from "@/lib/auth-config";
+import { DEMO_LEADS } from "@/lib/demo-data";
 
 export default function LeadDetailPage() {
   const params = useParams();
@@ -21,6 +23,11 @@ export default function LeadDetailPage() {
 
   useEffect(() => {
     async function fetchLead() {
+      if (AUTH_DISABLED && String(params.id).startsWith("demo-")) {
+        const demoLead = DEMO_LEADS.find((l) => l.id === params.id);
+        setLead(demoLead ?? null);
+        return;
+      }
       const { data } = await supabase
         .from("leads")
         .select("*, properties(name), contacts(first_name, last_name, email, company_name, phone)")
