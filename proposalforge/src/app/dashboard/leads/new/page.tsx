@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AUTH_DISABLED, DEMO_USER, DEMO_PROFILE } from "@/lib/auth-config";
 
 interface Property {
   id: string;
@@ -47,16 +48,23 @@ export default function NewLeadPage() {
     }
 
     // Create contact if provided
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/login"); return; }
+    let userId = DEMO_USER.id;
+    let orgId = DEMO_PROFILE.organization_id;
 
-    const { data: profile } = await supabase
-      .from("users")
-      .select("organization_id")
-      .eq("id", user.id)
-      .single();
+    if (!AUTH_DISABLED) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); return; }
 
-    if (!profile) { setError("Profile not found"); setLoading(false); return; }
+      const { data: profile } = await supabase
+        .from("users")
+        .select("organization_id")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile) { setError("Profile not found"); setLoading(false); return; }
+      userId = user.id;
+      orgId = profile.organization_id;
+    }
 
     let contactId: string | null = null;
     const contactFirstName = formData.get("contact_first_name") as string;
@@ -66,7 +74,7 @@ export default function NewLeadPage() {
       const { data: contact, error: contactError } = await supabase
         .from("contacts")
         .insert({
-          organization_id: profile.organization_id,
+          organization_id: orgId,
           first_name: contactFirstName,
           last_name: contactLastName,
           email: formData.get("contact_email") as string || null,
@@ -83,7 +91,7 @@ export default function NewLeadPage() {
     const { error: leadError } = await supabase.from("leads").insert({
       property_id: propertyId,
       contact_id: contactId,
-      assigned_to: user.id,
+      assigned_to: userId,
       event_name: formData.get("event_name") as string,
       event_type: (formData.get("event_type") as string) || "other",
       event_start_date: formData.get("event_start_date") as string || null,

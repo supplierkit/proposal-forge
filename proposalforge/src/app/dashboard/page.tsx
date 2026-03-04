@@ -3,27 +3,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, FileText, Target, TrendingUp } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import { AUTH_DISABLED, DEMO_PROFILE } from "@/lib/auth-config";
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login");
+  let profile = DEMO_PROFILE as typeof DEMO_PROFILE & { full_name: string };
+  let orgId = DEMO_PROFILE.organization_id;
+
+  if (!AUTH_DISABLED) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect("/login");
+
+    const { data: realProfile } = await supabase
+      .from("users")
+      .select("*, organizations(*)")
+      .eq("id", user.id)
+      .single();
+
+    if (!realProfile) redirect("/login");
+    profile = realProfile as typeof profile;
+    orgId = realProfile.organization_id;
   }
-
-  // Fetch user profile
-  const { data: profile } = await supabase
-    .from("users")
-    .select("*, organizations(*)")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) {
-    redirect("/login");
-  }
-
-  const orgId = profile.organization_id;
 
   // Fetch stats in parallel
   const [

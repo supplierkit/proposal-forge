@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { apiSuccess, apiError } from "@/lib/api-response";
 import { generateProposalSchema } from "@/lib/validations";
 import { generateToken } from "@/lib/utils";
+import { AUTH_DISABLED, DEMO_USER } from "@/lib/auth-config";
 
 function getAnthropic() {
   return new Anthropic();
@@ -12,8 +13,13 @@ function getAnthropic() {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return apiError("Unauthorized", 401);
+
+    let userId = DEMO_USER.id;
+    if (!AUTH_DISABLED) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return apiError("Unauthorized", 401);
+      userId = user.id;
+    }
 
     const body = await request.json();
     const parsed = generateProposalSchema.safeParse(body);
@@ -78,7 +84,7 @@ export async function POST(request: NextRequest) {
       .insert({
         property_id,
         lead_id,
-        created_by: user.id,
+        created_by: userId,
         title: `Proposal for ${lead.event_name}`,
         status: "draft",
         public_token: generateToken(32),
@@ -108,7 +114,7 @@ export async function POST(request: NextRequest) {
     // Log activity
     await supabase.from("activities").insert({
       lead_id,
-      user_id: user.id,
+      user_id: userId,
       type: "note",
       description: "AI proposal generated",
     });

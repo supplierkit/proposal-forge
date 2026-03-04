@@ -9,8 +9,11 @@ import {
   Shield,
   CheckCircle,
 } from "lucide-react";
+import { AUTH_DISABLED } from "@/lib/auth-config";
 
 export default function LandingPage() {
+  const signInHref = AUTH_DISABLED ? "/dashboard" : "/login";
+  const signUpHref = AUTH_DISABLED ? "/dashboard" : "/signup";
   return (
     <div className="min-h-screen bg-white font-sans">
       {/* Navigation */}
@@ -24,10 +27,10 @@ export default function LandingPage() {
             <Link href="#pricing" className="text-[14px] text-[#666] hover:text-[#111]">
               Pricing
             </Link>
-            <Link href="/login">
+            <Link href={signInHref}>
               <Button variant="ghost" size="sm">Sign in</Button>
             </Link>
-            <Link href="/signup">
+            <Link href={signUpHref}>
               <Button size="sm">Start Free Trial</Button>
             </Link>
           </div>
@@ -49,7 +52,7 @@ export default function LandingPage() {
               with AI — respond faster, win more group bookings, and track every engagement.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-              <Link href="/signup">
+              <Link href={signUpHref}>
                 <Button size="lg" className="w-full sm:w-auto">
                   Start Free Trial
                 </Button>
@@ -187,7 +190,7 @@ export default function LandingPage() {
                 </ul>
               </div>
               <div className="mt-auto pt-6">
-                <Link href="/signup" className="block">
+                <Link href={signUpHref} className="block">
                   <Button variant="outline" className="w-full">Start Free Trial</Button>
                 </Link>
               </div>
@@ -214,7 +217,7 @@ export default function LandingPage() {
                 </ul>
               </div>
               <div className="mt-auto pt-6">
-                <Link href="/signup" className="block">
+                <Link href={signUpHref} className="block">
                   <Button className="w-full">Start Free Trial</Button>
                 </Link>
               </div>
@@ -241,7 +244,7 @@ export default function LandingPage() {
                 </ul>
               </div>
               <div className="mt-auto pt-6">
-                <Link href="/signup" className="block">
+                <Link href={signUpHref} className="block">
                   <Button variant="outline" className="w-full">Contact Sales</Button>
                 </Link>
               </div>
@@ -260,7 +263,7 @@ export default function LandingPage() {
             Join hotels that are winning more group business with AI-powered proposals.
           </p>
           <div className="mt-8 flex flex-col items-center gap-4">
-            <Link href="/signup">
+            <Link href={signUpHref}>
               <Button size="lg">Start Your Free Trial</Button>
             </Link>
             <p className="text-[13px] text-[#888]">14-day free trial. No credit card required.</p>

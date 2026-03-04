@@ -18,8 +18,17 @@ const PRICE_IDS: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
+
+    let userId: string | undefined;
+    let userEmail: string | undefined;
+    if (process.env.NEXT_PUBLIC_AUTH_DISABLED === "true") {
+      return apiError("Billing is disabled in demo mode", 403);
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return apiError("Unauthorized", 401);
+    userId = user.id;
+    userEmail = user.email;
 
     const { priceKey } = await request.json();
     const priceId = PRICE_IDS[priceKey];
@@ -28,7 +37,7 @@ export async function POST(request: NextRequest) {
     const { data: profile } = await supabase
       .from("users")
       .select("organization_id, organizations(stripe_customer_id, name, slug)")
-      .eq("id", user.id)
+      .eq("id", userId!)
       .single();
 
     if (!profile) return apiError("Profile not found", 404);
@@ -42,7 +51,7 @@ export async function POST(request: NextRequest) {
     // Create Stripe customer if needed
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: user.email,
+        email: userEmail,
         name: org?.name,
         metadata: { organization_id: profile.organization_id },
       });

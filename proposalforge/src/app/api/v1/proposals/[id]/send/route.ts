@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { apiSuccess, apiError } from "@/lib/api-response";
 import { sendProposalSchema } from "@/lib/validations";
+import { AUTH_DISABLED, DEMO_USER } from "@/lib/auth-config";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
@@ -15,8 +16,13 @@ export async function POST(
   try {
     const { id } = await params;
     const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return apiError("Unauthorized", 401);
+
+    let userId = DEMO_USER.id;
+    if (!AUTH_DISABLED) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return apiError("Unauthorized", 401);
+      userId = user.id;
+    }
 
     const body = await request.json();
     const parsed = sendProposalSchema.safeParse(body);
@@ -90,7 +96,7 @@ export async function POST(
     // Log activity
     await supabase.from("activities").insert({
       lead_id: proposal.lead_id,
-      user_id: user.id,
+      user_id: userId,
       type: "proposal_sent",
       description: `Proposal sent to ${recipient_email}`,
     });

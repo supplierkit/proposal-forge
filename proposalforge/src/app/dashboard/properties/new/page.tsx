@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AUTH_DISABLED, DEMO_PROFILE } from "@/lib/auth-config";
 
 export default function NewPropertyPage() {
   const router = useRouter();
@@ -22,20 +23,24 @@ export default function NewPropertyPage() {
 
     const formData = new FormData(e.currentTarget);
 
-    // Get user's org
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/login"); return; }
+    let orgId = DEMO_PROFILE.organization_id;
 
-    const { data: profile } = await supabase
-      .from("users")
-      .select("organization_id")
-      .eq("id", user.id)
-      .single();
+    if (!AUTH_DISABLED) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); return; }
 
-    if (!profile) { setError("User profile not found"); setLoading(false); return; }
+      const { data: profile } = await supabase
+        .from("users")
+        .select("organization_id")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile) { setError("User profile not found"); setLoading(false); return; }
+      orgId = profile.organization_id;
+    }
 
     const { error: insertError } = await supabase.from("properties").insert({
-      organization_id: profile.organization_id,
+      organization_id: orgId,
       name: formData.get("name") as string,
       description: formData.get("description") as string || null,
       star_rating: formData.get("star_rating") ? Number(formData.get("star_rating")) : null,
