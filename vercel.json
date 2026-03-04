@@ -1,3 +1,6 @@
 {
-  "rootDirectory": "proposalforge"
+  "buildCommand": "cd proposalforge && npm run build",
+  "installCommand": "cd proposalforge && npm install",
+  "outputDirectory": "proposalforge/.next",
+  "framework": "nextjs"
 }
