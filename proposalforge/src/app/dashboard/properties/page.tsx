@@ -5,25 +5,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Plus, MapPin, Star } from "lucide-react";
+import { AUTH_DISABLED, DEMO_PROFILE } from "@/lib/auth-config";
 
 export default async function PropertiesPage() {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  let orgId = DEMO_PROFILE.organization_id;
 
-  const { data: profile } = await supabase
-    .from("users")
-    .select("organization_id")
-    .eq("id", user.id)
-    .single();
+  if (!AUTH_DISABLED) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect("/login");
 
-  if (!profile) redirect("/login");
+    const { data: profile } = await supabase
+      .from("users")
+      .select("organization_id")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile) redirect("/login");
+    orgId = profile.organization_id;
+  }
 
   const { data: properties } = await supabase
     .from("properties")
     .select("*, room_types(count), function_spaces(count)")
-    .eq("organization_id", profile.organization_id)
+    .eq("organization_id", orgId)
     .order("created_at", { ascending: false });
 
   return (

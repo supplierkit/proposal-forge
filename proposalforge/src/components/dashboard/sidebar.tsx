@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { AUTH_DISABLED } from "@/lib/auth-config";
 import {
   Building2,
   LayoutDashboard,
@@ -67,15 +68,17 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-[#eee] p-3">
-        <button
-          onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-[14px] font-medium text-[#444] hover:bg-[#FAFAFA] hover:text-[#111] transition-colors cursor-pointer"
-        >
-          <LogOut className="h-5 w-5" />
-          Sign out
-        </button>
-      </div>
+      {!AUTH_DISABLED && (
+        <div className="border-t border-[#eee] p-3">
+          <button
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-[14px] font-medium text-[#444] hover:bg-[#FAFAFA] hover:text-[#111] transition-colors cursor-pointer"
+          >
+            <LogOut className="h-5 w-5" />
+            Sign out
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { AUTH_DISABLED, DEMO_PROFILE } from "@/lib/auth-config";
 
 export default function SettingsPage() {
   return (
@@ -35,6 +36,12 @@ function SettingsContent() {
 
   useEffect(() => {
     async function fetchData() {
+      if (AUTH_DISABLED) {
+        setProfile(DEMO_PROFILE);
+        setSubscription({ plan: "professional", status: "active", property_limit: 50, user_limit: 10 });
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
