@@ -41,7 +41,7 @@ export default function LoginPage() {
     <Card>
       <CardHeader className="text-center">
         <CardTitle className="text-[22px] font-bold tracking-tight text-[#111]">Welcome back</CardTitle>
-        <CardDescription className="text-[14px] text-[#444]">Sign in to your ProposalForge account</CardDescription>
+        <CardDescription className="text-[14px] text-[#444]">Sign in to your SupplierKit account</CardDescription>
       </CardHeader>
       <form onSubmit={handleLogin}>
         <CardContent className="space-y-4">

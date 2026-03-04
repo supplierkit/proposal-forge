@@ -91,7 +91,7 @@ export default async function PublicProposalPage({ params }: Props) {
       </main>
 
       <footer className="text-center py-8 text-sm text-[#888]">
-        Powered by ProposalForge
+        Powered by SupplierKit
       </footer>
     </div>
   );

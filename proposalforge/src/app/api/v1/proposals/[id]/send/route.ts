@@ -46,7 +46,7 @@ export async function POST(
     try {
       const resend = getResend();
       await resend.emails.send({
-        from: `ProposalForge <proposals@${process.env.RESEND_DOMAIN ?? "proposalforge.com"}>`,
+        from: `SupplierKit <proposals@${process.env.RESEND_DOMAIN ?? "supplierkit.com"}>`,
         to: recipient_email,
         subject,
         html: `

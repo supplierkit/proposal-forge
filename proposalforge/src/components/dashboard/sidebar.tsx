@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { AUTH_DISABLED } from "@/lib/auth-config";
+import { SupplierKitLogo } from "@/components/ui/supplierkit-logo";
 import {
   Building2,
   LayoutDashboard,
@@ -14,7 +15,6 @@ import {
   Settings,
   LogOut,
   Target,
-  Sparkles,
 } from "lucide-react";
 
 const navigation = [
@@ -40,9 +40,8 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full w-64 flex-col border-r border-[#eee] bg-white">
-      <div className="flex h-16 items-center gap-2 border-b border-[#eee] px-6">
-        <Sparkles className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold text-[#111]">ProposalForge</span>
+      <div className="flex h-16 items-center border-b border-[#eee] px-6">
+        <SupplierKitLogo />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">

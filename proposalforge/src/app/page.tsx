@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-  Sparkles,
   Clock,
   BarChart3,
   Building2,
   Zap,
   Shield,
-  CheckCircle,
+  Sparkles,
 } from "lucide-react";
 import { AUTH_DISABLED } from "@/lib/auth-config";
+import { SupplierKitLogo, SupplierKitIcon } from "@/components/ui/supplierkit-logo";
 
 export default function LandingPage() {
   const signInHref = AUTH_DISABLED ? "/dashboard" : "/login";
@@ -19,10 +19,7 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="border-b border-[#eee]">
         <div className="mx-auto max-w-[1120px] px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <span className="text-[18px] font-bold text-[#111]">ProposalForge</span>
-          </div>
+          <SupplierKitLogo />
           <div className="flex items-center gap-4">
             <Link href="#pricing" className="text-[14px] text-[#666] hover:text-[#111]">
               Pricing
@@ -48,7 +45,7 @@ export default function LandingPage() {
               Create hotel group proposals in minutes, not hours
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-[#333] md:text-lg">
-              ProposalForge helps hotel sales teams generate professional, interactive MICE proposals
+              SupplierKit helps hotel sales teams generate professional, interactive MICE proposals
               with AI — respond faster, win more group bookings, and track every engagement.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
@@ -104,7 +101,7 @@ export default function LandingPage() {
               {
                 icon: Clock,
                 title: "Respond in Minutes",
-                description: "First responders win 70% of group business. ProposalForge gets your proposals out before the competition even opens their email.",
+                description: "First responders win 70% of group business. SupplierKit gets your proposals out before the competition even opens their email.",
               },
               {
                 icon: BarChart3,
@@ -274,12 +271,12 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-[#eee] bg-[#FAFAFA]">
         <div className="mx-auto max-w-[1120px] px-6 py-8 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-[15px] font-semibold text-[#111]">ProposalForge</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[15px] font-semibold text-[#111]">SupplierKit</span>
+            <SupplierKitIcon className="h-4 w-4 -mt-0.5" />
           </div>
           <p className="text-[12px] text-[#888]">
-            &copy; {new Date().getFullYear()} ProposalForge. All rights reserved.
+            &copy; {new Date().getFullYear()} SupplierKit. All rights reserved.
           </p>
         </div>
       </footer>
