@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Target } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { LeadStatus } from "@/types/database";
+import { AUTH_DISABLED } from "@/lib/auth-config";
+import { DEMO_LEADS } from "@/lib/demo-data";
 
 const STATUS_COLUMNS: { status: LeadStatus; label: string; color: "default" | "warning" | "success" | "destructive" | "secondary" }[] = [
   { status: "new", label: "New", color: "default" },
@@ -39,6 +41,10 @@ export default function LeadsPage() {
 
   useEffect(() => {
     async function fetchLeads() {
+      if (AUTH_DISABLED) {
+        setLeads(DEMO_LEADS as unknown as Lead[]);
+        return;
+      }
       const { data } = await supabase
         .from("leads")
         .select("*, properties(name), contacts(first_name, last_name, company_name)")

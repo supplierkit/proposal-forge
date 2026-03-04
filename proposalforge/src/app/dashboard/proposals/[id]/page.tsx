@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Send, ExternalLink, Eye, Copy } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { ProposalStatus } from "@/types/database";
+import { AUTH_DISABLED } from "@/lib/auth-config";
+import { DEMO_PROPOSALS, DEMO_PROPOSAL_VIEWS } from "@/lib/demo-data";
 
 const STATUS_BADGE: Record<ProposalStatus, { label: string; variant: "default" | "secondary" | "success" | "warning" | "destructive" }> = {
   draft: { label: "Draft", variant: "secondary" },
@@ -37,6 +39,12 @@ export default function ProposalDetailPage() {
 
   useEffect(() => {
     async function fetchData() {
+      if (AUTH_DISABLED && String(params.id).startsWith("demo-")) {
+        const demoProposal = DEMO_PROPOSALS.find((p) => p.id === params.id);
+        setProposal(demoProposal ?? null);
+        setViews(DEMO_PROPOSAL_VIEWS.filter((v) => v.proposal_id === params.id));
+        return;
+      }
       const [{ data: proposalData }, { data: viewData }] = await Promise.all([
         supabase
           .from("proposals")

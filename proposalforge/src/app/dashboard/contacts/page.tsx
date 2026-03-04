@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { AUTH_DISABLED } from "@/lib/auth-config";
+import { DEMO_CONTACTS } from "@/lib/demo-data";
 
 export default function ContactsPage() {
   const supabase = createClient();
@@ -14,6 +16,10 @@ export default function ContactsPage() {
 
   useEffect(() => {
     async function fetchContacts() {
+      if (AUTH_DISABLED) {
+        setContacts(DEMO_CONTACTS);
+        return;
+      }
       const { data } = await supabase
         .from("contacts")
         .select("*")

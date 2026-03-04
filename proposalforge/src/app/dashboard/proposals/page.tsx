@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Eye, Clock } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { ProposalStatus } from "@/types/database";
+import { AUTH_DISABLED } from "@/lib/auth-config";
+import { DEMO_PROPOSALS } from "@/lib/demo-data";
 
 const STATUS_BADGE: Record<ProposalStatus, { label: string; variant: "default" | "secondary" | "success" | "warning" | "destructive" }> = {
   draft: { label: "Draft", variant: "secondary" },
@@ -38,6 +40,10 @@ export default function ProposalsPage() {
 
   useEffect(() => {
     async function fetchProposals() {
+      if (AUTH_DISABLED) {
+        setProposals(DEMO_PROPOSALS as unknown as Proposal[]);
+        return;
+      }
       const { data } = await supabase
         .from("proposals")
         .select("*, leads(event_name, contacts(first_name, last_name)), properties(name)")

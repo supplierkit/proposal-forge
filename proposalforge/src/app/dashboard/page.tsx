@@ -4,14 +4,25 @@ import { Building2, FileText, Target, TrendingUp } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { AUTH_DISABLED, DEMO_PROFILE } from "@/lib/auth-config";
+import { DEMO_STATS, DEMO_LEADS, DEMO_PROPOSALS } from "@/lib/demo-data";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
 
   let profile = DEMO_PROFILE as typeof DEMO_PROFILE & { full_name: string };
-  let orgId = DEMO_PROFILE.organization_id;
+  let pCount = 0;
+  let lCount = 0;
+  let prCount = 0;
+  let totalRevenue = 0;
 
-  if (!AUTH_DISABLED) {
+  if (AUTH_DISABLED) {
+    pCount = DEMO_STATS.propertyCount;
+    lCount = DEMO_STATS.leadCount;
+    prCount = DEMO_STATS.proposalCount;
+    totalRevenue = DEMO_STATS.totalRevenue;
+  } else {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/login");
 
@@ -23,30 +34,49 @@ export default async function DashboardPage() {
 
     if (!realProfile) redirect("/login");
     profile = realProfile as typeof profile;
-    orgId = realProfile.organization_id;
+    const orgId = realProfile.organization_id;
+
+    const [
+      { count: propertyCount },
+      { count: leadCount },
+      { count: proposalCount },
+      { data: wonLeads },
+    ] = await Promise.all([
+      supabase.from("properties").select("*", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("leads").select("*", { count: "exact", head: true }).eq("property_id", orgId),
+      supabase.from("proposals").select("*", { count: "exact", head: true }),
+      supabase.from("leads").select("estimated_value").eq("status", "won"),
+    ]);
+
+    pCount = propertyCount ?? 0;
+    lCount = leadCount ?? 0;
+    prCount = proposalCount ?? 0;
+    totalRevenue = wonLeads?.reduce((sum, l) => sum + (Number(l.estimated_value) || 0), 0) ?? 0;
   }
 
-  // Fetch stats in parallel
-  const [
-    { count: propertyCount },
-    { count: leadCount },
-    { count: proposalCount },
-    { data: wonLeads },
-  ] = await Promise.all([
-    supabase.from("properties").select("*", { count: "exact", head: true }).eq("organization_id", orgId),
-    supabase.from("leads").select("*", { count: "exact", head: true }).eq("property_id", orgId),
-    supabase.from("proposals").select("*", { count: "exact", head: true }),
-    supabase.from("leads").select("estimated_value").eq("status", "won"),
-  ]);
-
-  const totalRevenue = wonLeads?.reduce((sum, l) => sum + (Number(l.estimated_value) || 0), 0) ?? 0;
-
   const stats = [
-    { name: "Properties", value: propertyCount ?? 0, icon: Building2 },
-    { name: "Active Leads", value: leadCount ?? 0, icon: Target },
-    { name: "Proposals Sent", value: proposalCount ?? 0, icon: FileText },
+    { name: "Properties", value: pCount, icon: Building2 },
+    { name: "Active Leads", value: lCount, icon: Target },
+    { name: "Proposals Sent", value: prCount, icon: FileText },
     { name: "Revenue Won", value: formatCurrency(totalRevenue), icon: TrendingUp },
   ];
+
+  const recentLeads = AUTH_DISABLED ? DEMO_LEADS.slice(0, 3) : [];
+  const recentProposals = AUTH_DISABLED ? DEMO_PROPOSALS.slice(0, 3) : [];
+
+  const statusColors: Record<string, "default" | "warning" | "success" | "destructive" | "secondary"> = {
+    new: "default",
+    qualified: "warning",
+    proposal_sent: "secondary",
+    negotiating: "warning",
+    won: "success",
+    lost: "destructive",
+    draft: "secondary",
+    sent: "default",
+    viewed: "warning",
+    accepted: "success",
+    declined: "destructive",
+  };
 
   return (
     <div>
@@ -83,9 +113,36 @@ export default async function DashboardPage() {
             <CardTitle className="text-[13px] font-medium uppercase tracking-widest text-[#888]">Recent Leads</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-[#666]">
-              No leads yet. Create your first property and start adding leads.
-            </p>
+            {recentLeads.length === 0 ? (
+              <p className="text-sm text-[#666]">
+                No leads yet. Create your first property and start adding leads.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {recentLeads.map((lead) => (
+                  <Link
+                    key={lead.id}
+                    href={`/dashboard/leads/${lead.id}`}
+                    className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-[#FAFAFA] transition-colors"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-[#111]">{lead.event_name}</p>
+                      <p className="text-xs text-[#666]">
+                        {lead.contacts?.company_name ?? `${lead.contacts?.first_name} ${lead.contacts?.last_name}`}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-[#059669]">
+                        {formatCurrency(lead.estimated_value ?? 0)}
+                      </span>
+                      <Badge variant={statusColors[lead.status] ?? "secondary"}>
+                        {lead.status.replace("_", " ")}
+                      </Badge>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -94,9 +151,36 @@ export default async function DashboardPage() {
             <CardTitle className="text-[13px] font-medium uppercase tracking-widest text-[#888]">Recent Proposals</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-[#666]">
-              No proposals yet. Generate your first AI-powered proposal from a lead.
-            </p>
+            {recentProposals.length === 0 ? (
+              <p className="text-sm text-[#666]">
+                No proposals yet. Generate your first AI-powered proposal from a lead.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {recentProposals.map((proposal) => (
+                  <Link
+                    key={proposal.id}
+                    href={`/dashboard/proposals/${proposal.id}`}
+                    className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-[#FAFAFA] transition-colors"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-[#111]">{proposal.title}</p>
+                      <p className="text-xs text-[#666]">
+                        {proposal.leads?.contacts?.first_name} {proposal.leads?.contacts?.last_name}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-[#111]">
+                        {formatCurrency(proposal.total_value)}
+                      </span>
+                      <Badge variant={statusColors[proposal.status] ?? "secondary"}>
+                        {proposal.status}
+                      </Badge>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
