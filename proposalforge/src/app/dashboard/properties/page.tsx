@@ -30,8 +30,8 @@ export default async function PropertiesPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
-          <p className="text-gray-500 mt-1">Manage your hotel properties and their offerings.</p>
+          <h1 className="text-[22px] font-bold tracking-tight text-[#111]">Properties</h1>
+          <p className="text-[14px] leading-relaxed text-[#444] mt-1">Manage your hotel properties and their offerings.</p>
         </div>
         <Link href="/dashboard/properties/new">
           <Button>
@@ -44,9 +44,9 @@ export default async function PropertiesPage() {
       {!properties || properties.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Building2 className="h-12 w-12 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No properties yet</h3>
-            <p className="text-gray-500 mb-4 text-center max-w-md">
+            <Building2 className="h-12 w-12 text-[#888] mb-4" />
+            <h3 className="text-lg font-medium text-[#111] mb-2">No properties yet</h3>
+            <p className="text-[14px] leading-relaxed text-[#444] mb-4 text-center max-w-md">
               Add your first hotel property to start creating proposals. Include room types,
               function spaces, and catering packages.
             </p>
@@ -70,13 +70,13 @@ export default async function PropertiesPage() {
                       <CardTitle className="text-lg">{property.name}</CardTitle>
                       {property.star_rating && (
                         <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                          <span className="text-sm text-gray-500">{property.star_rating}</span>
+                          <Star className="h-4 w-4 text-[#D97706] fill-[#D97706]" />
+                          <span className="text-sm text-[#666]">{property.star_rating}</span>
                         </div>
                       )}
                     </div>
                     {address?.city && (
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <div className="flex items-center gap-1 text-sm text-[#666]">
                         <MapPin className="h-3.5 w-3.5" />
                         {[address.city, address.country].filter(Boolean).join(", ")}
                       </div>

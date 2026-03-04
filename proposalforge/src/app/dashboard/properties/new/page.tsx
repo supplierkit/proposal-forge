@@ -64,11 +64,11 @@ export default function NewPropertyPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Add New Property</h1>
+      <h1 className="text-[22px] font-bold tracking-tight text-[#111] mb-6">Add New Property</h1>
 
       <form onSubmit={handleSubmit}>
         {error && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 mb-4">
+          <div className="rounded-md bg-[#DC2626]/10 p-3 text-sm text-[#DC2626] mb-4">
             {error}
           </div>
         )}

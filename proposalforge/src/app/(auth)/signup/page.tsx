@@ -74,13 +74,13 @@ export default function SignUpPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Start your free trial</CardTitle>
-        <CardDescription>14 days free. No credit card required.</CardDescription>
+        <CardTitle className="text-[22px] font-bold tracking-tight text-[#111]">Start your free trial</CardTitle>
+        <CardDescription className="text-[14px] text-[#444]">14 days free. No credit card required.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSignUp}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-md bg-red-50 p-3 text-[14px] text-[#DC2626]">
               {error}
             </div>
           )}
@@ -132,9 +132,9 @@ export default function SignUpPage() {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Creating account..." : "Create account"}
           </Button>
-          <p className="text-sm text-gray-500">
+          <p className="text-[14px] text-[#444]">
             Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline">
+            <Link href="/login" className="text-primary hover:underline">
               Sign in
             </Link>
           </p>

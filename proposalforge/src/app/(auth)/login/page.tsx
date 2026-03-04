@@ -40,13 +40,13 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Welcome back</CardTitle>
-        <CardDescription>Sign in to your ProposalForge account</CardDescription>
+        <CardTitle className="text-[22px] font-bold tracking-tight text-[#111]">Welcome back</CardTitle>
+        <CardDescription className="text-[14px] text-[#444]">Sign in to your ProposalForge account</CardDescription>
       </CardHeader>
       <form onSubmit={handleLogin}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-md bg-red-50 p-3 text-[14px] text-[#DC2626]">
               {error}
             </div>
           )}
@@ -66,7 +66,7 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Link
                 href="/reset-password"
-                className="text-sm text-blue-600 hover:underline"
+                className="text-[14px] text-primary hover:underline"
               >
                 Forgot password?
               </Link>
@@ -84,9 +84,9 @@ export default function LoginPage() {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </Button>
-          <p className="text-sm text-gray-500">
+          <p className="text-[14px] text-[#444]">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-blue-600 hover:underline">
+            <Link href="/signup" className="text-primary hover:underline">
               Start free trial
             </Link>
           </p>

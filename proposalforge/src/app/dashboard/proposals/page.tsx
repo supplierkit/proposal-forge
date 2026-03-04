@@ -51,17 +51,17 @@ export default function ProposalsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Proposals</h1>
-          <p className="text-gray-500 mt-1">Manage and track your group sales proposals.</p>
+          <h1 className="text-[22px] font-bold tracking-tight text-[#111]">Proposals</h1>
+          <p className="text-[#666] mt-1">Manage and track your group sales proposals.</p>
         </div>
       </div>
 
       {proposals.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileText className="h-12 w-12 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No proposals yet</h3>
-            <p className="text-gray-500 mb-4 text-center max-w-md">
+            <FileText className="h-12 w-12 text-[#888] mb-4" />
+            <h3 className="text-lg font-medium text-[#111] mb-2">No proposals yet</h3>
+            <p className="text-[#666] mb-4 text-center max-w-md">
               Create a lead first, then generate an AI-powered proposal for it.
             </p>
             <Link href="/dashboard/leads/new">
@@ -78,10 +78,10 @@ export default function ProposalsPage() {
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-4">
-                      <FileText className="h-8 w-8 text-blue-500" />
+                      <FileText className="h-8 w-8 text-primary" />
                       <div>
                         <h3 className="font-medium">{proposal.title}</h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[#666]">
                           {proposal.properties?.name}
                           {proposal.leads?.contacts && (
                             <> &middot; {proposal.leads.contacts.first_name} {proposal.leads.contacts.last_name}</>
@@ -91,12 +91,12 @@ export default function ProposalsPage() {
                     </div>
                     <div className="flex items-center gap-4">
                       {proposal.total_value && (
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-[#444]">
                           {formatCurrency(proposal.total_value)}
                         </span>
                       )}
                       <Badge variant={status.variant}>{status.label}</Badge>
-                      <div className="flex items-center gap-1 text-xs text-gray-400">
+                      <div className="flex items-center gap-1 text-xs text-[#888]">
                         {proposal.viewed_at ? (
                           <><Eye className="h-3.5 w-3.5" /> Viewed</>
                         ) : (

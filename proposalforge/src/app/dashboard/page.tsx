@@ -50,10 +50,10 @@ export default async function DashboardPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-[22px] font-bold tracking-tight text-[#111] md:text-[28px]">
           Welcome back, {profile.full_name.split(" ")[0]}
         </h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-[#666] mt-1">
           Here&apos;s an overview of your group sales pipeline.
         </p>
       </div>
@@ -62,13 +62,15 @@ export default async function DashboardPage() {
         {stats.map((stat) => (
           <Card key={stat.name}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-[#888]">
                 {stat.name}
               </CardTitle>
-              <stat.icon className="h-5 w-5 text-gray-400" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
+                <stat.icon className="h-4 w-4 text-primary" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-2xl font-bold text-[#111]">{stat.value}</div>
             </CardContent>
           </Card>
         ))}
@@ -77,10 +79,10 @@ export default async function DashboardPage() {
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Recent Leads</CardTitle>
+            <CardTitle className="text-[13px] font-medium uppercase tracking-widest text-[#888]">Recent Leads</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#666]">
               No leads yet. Create your first property and start adding leads.
             </p>
           </CardContent>
@@ -88,10 +90,10 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Recent Proposals</CardTitle>
+            <CardTitle className="text-[13px] font-medium uppercase tracking-widest text-[#888]">Recent Proposals</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#666]">
               No proposals yet. Generate your first AI-powered proposal from a lead.
             </p>
           </CardContent>

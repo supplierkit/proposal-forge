@@ -1,26 +1,70 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F6F7F8;
+  --foreground: #101418;
+  --card: #FFFFFF;
+  --card-foreground: #101418;
+  --primary: #215C46;
+  --primary-foreground: #FFFFFF;
+  --secondary: #DDEBE5;
+  --secondary-foreground: #174433;
+  --muted: #F6F7F8;
+  --muted-foreground: #3A4752;
+  --accent: #F3E9CF;
+  --accent-foreground: #A98943;
+  --destructive: #A33B3B;
+  --destructive-foreground: #FFFFFF;
+  --border: #E4E8EC;
+  --ring: #215C46;
+  --radius: 0.5rem;
+
+  --gold: #C6A75E;
+  --gold-hover: #A98943;
+  --gold-tint: #F3E9CF;
+  --evergreen: #215C46;
+  --evergreen-dark: #174433;
+  --evergreen-light: #DDEBE5;
+  --ink: #101418;
+  --mist: #F6F7F8;
+  --slate: #3A4752;
+  --steel-blue: #2E5870;
+  --muted-amber: #B98A2D;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-hover: var(--gold-hover);
+  --color-gold-tint: var(--gold-tint);
+  --color-evergreen: var(--evergreen);
+  --color-evergreen-dark: var(--evergreen-dark);
+  --color-evergreen-light: var(--evergreen-light);
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

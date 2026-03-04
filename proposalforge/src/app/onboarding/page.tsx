@@ -92,7 +92,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F6F7F8] flex items-center justify-center px-4">
       <div className="w-full max-w-lg">
         {/* Progress */}
         <div className="flex items-center justify-center gap-2 mb-8">
@@ -101,22 +101,22 @@ export default function OnboardingPage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   i <= step
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-500"
+                    ? "bg-primary text-white"
+                    : "bg-[#eee] text-[#666]"
                 }`}
               >
                 {i + 1}
               </div>
-              <span className="text-sm text-gray-600 hidden sm:inline">{label}</span>
+              <span className="text-sm text-[#444] hidden sm:inline">{label}</span>
               {i < STEPS.length - 1 && (
-                <div className="w-8 h-0.5 bg-gray-200" />
+                <div className="w-8 h-0.5 bg-[#eee]" />
               )}
             </div>
           ))}
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 mb-4">{error}</div>
+          <div className="rounded-md bg-[#DC2626]/5 p-3 text-sm text-[#DC2626] mb-4">{error}</div>
         )}
 
         {/* Step 1: Create Property */}
@@ -124,7 +124,7 @@ export default function OnboardingPage() {
           <Card>
             <CardHeader>
               <CardTitle>Add Your First Property</CardTitle>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-[#666] mt-1">
                 Let&apos;s set up your first hotel or venue to start creating proposals.
               </p>
             </CardHeader>
@@ -171,7 +171,7 @@ export default function OnboardingPage() {
           <Card>
             <CardHeader>
               <CardTitle>Add a Room Type</CardTitle>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-[#666] mt-1">
                 Add at least one room type so AI can generate accurate proposals.
               </p>
             </CardHeader>
@@ -217,12 +217,12 @@ export default function OnboardingPage() {
           <Card>
             <CardHeader>
               <CardTitle>You&apos;re All Set!</CardTitle>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-[#666] mt-1">
                 Your property is ready. Now you can create leads and generate AI-powered proposals.
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-sm text-primary">
                 <p className="font-medium mb-2">Quick Start Guide:</p>
                 <ol className="list-decimal list-inside space-y-1">
                   <li>Go to <strong>Leads</strong> and create a new lead with event details</li>

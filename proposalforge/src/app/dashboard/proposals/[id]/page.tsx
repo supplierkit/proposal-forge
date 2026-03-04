@@ -97,7 +97,7 @@ export default function ProposalDetailPage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  if (!proposal) return <div className="text-gray-500">Loading...</div>;
+  if (!proposal) return <div className="text-[#666]">Loading...</div>;
 
   const status = STATUS_BADGE[proposal.status as ProposalStatus];
   const sections = (proposal.proposal_sections ?? []).sort(
@@ -108,10 +108,10 @@ export default function ProposalDetailPage() {
   return (
     <div className="max-w-4xl">
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => router.back()} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+        <button onClick={() => router.back()} className="text-[#888] hover:text-[#444] cursor-pointer">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="text-2xl font-bold text-gray-900 flex-1">{proposal.title}</h1>
+        <h1 className="text-[22px] font-bold tracking-tight text-[#111] flex-1">{proposal.title}</h1>
         <Badge variant={status.variant}>{status.label}</Badge>
       </div>
 
@@ -121,10 +121,10 @@ export default function ProposalDetailPage() {
           {sections.map((section: { id: string; title: string; type: string }) => (
             <Card key={section.id}>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-gray-500">{section.title}</CardTitle>
+                <CardTitle className="text-sm text-[#666]">{section.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-[#444]">
                   {section.type === "cover" ? "Cover page" : "Content configured"}
                 </p>
               </CardContent>
@@ -147,7 +147,7 @@ export default function ProposalDetailPage() {
                 href={`/p/${proposal.public_token}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full h-10 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center gap-2 w-full h-10 rounded-md border border-border bg-white text-sm font-medium text-[#444] hover:bg-[#FAFAFA] transition-colors"
               >
                 <ExternalLink className="h-4 w-4" />
                 Preview
@@ -168,7 +168,7 @@ export default function ProposalDetailPage() {
               <CardContent>
                 <form onSubmit={handleSend} className="space-y-3">
                   {sendError && (
-                    <div className="text-sm text-red-600">{sendError}</div>
+                    <div className="text-[14px] text-[#DC2626]">{sendError}</div>
                   )}
                   <div className="space-y-1">
                     <Label htmlFor="recipient_email">To</Label>
@@ -213,26 +213,26 @@ export default function ProposalDetailPage() {
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Property</span>
+                <span className="text-[#666]">Property</span>
                 <span>{proposal.properties?.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Value</span>
+                <span className="text-[#666]">Value</span>
                 <span className="font-medium">{formatCurrency(proposal.total_value ?? 0)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Created</span>
+                <span className="text-[#666]">Created</span>
                 <span>{formatDate(proposal.created_at)}</span>
               </div>
               {proposal.sent_at && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Sent</span>
+                  <span className="text-[#666]">Sent</span>
                   <span>{formatDate(proposal.sent_at)}</span>
                 </div>
               )}
               {proposal.viewed_at && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">First Viewed</span>
+                  <span className="text-[#666]">First Viewed</span>
                   <span>{formatDate(proposal.viewed_at)}</span>
                 </div>
               )}
@@ -250,7 +250,7 @@ export default function ProposalDetailPage() {
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {views.slice(0, 5).map((view) => (
-                  <div key={view.id} className="flex justify-between text-gray-500">
+                  <div key={view.id} className="flex justify-between text-[#666]">
                     <span>{formatDate(view.created_at)}</span>
                     {view.total_duration_seconds > 0 && (
                       <span>{view.total_duration_seconds}s</span>

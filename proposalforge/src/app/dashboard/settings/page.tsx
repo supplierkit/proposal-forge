@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<div className="text-gray-500">Loading...</div>}>
+    <Suspense fallback={<div className="text-[#666]">Loading...</div>}>
       <SettingsContent />
     </Suspense>
   );
@@ -83,17 +83,17 @@ function SettingsContent() {
     }
   }
 
-  if (!profile) return <div className="text-gray-500">Loading...</div>;
+  if (!profile) return <div className="text-[#666]">Loading...</div>;
 
   const orgs = profile.organizations as unknown as { name: string; slug: string }[] | null;
   const org = Array.isArray(orgs) ? orgs[0] : orgs;
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Settings</h1>
+      <h1 className="text-[22px] font-bold tracking-tight text-[#111] mb-6">Settings</h1>
 
       {billingMessage && (
-        <div className="rounded-md bg-blue-50 p-3 text-sm text-blue-700 mb-4">
+        <div className="rounded-md bg-secondary p-3 text-sm text-primary mb-4">
           {billingMessage}
         </div>
       )}
@@ -135,12 +135,12 @@ function SettingsContent() {
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Name</span>
+            <span className="text-[#666]">Name</span>
             <span>{org?.name}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Slug</span>
-            <span className="text-gray-400">{org?.slug}</span>
+            <span className="text-[#666]">Slug</span>
+            <span className="text-[#888]">{org?.slug}</span>
           </div>
         </CardContent>
       </Card>
@@ -154,11 +154,11 @@ function SettingsContent() {
           {subscription && (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-gray-500">Plan</span>
+                <span className="text-[#666]">Plan</span>
                 <Badge variant="default">{subscription.plan}</Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Status</span>
+                <span className="text-[#666]">Status</span>
                 <Badge
                   variant={
                     subscription.status === "active"
@@ -172,19 +172,19 @@ function SettingsContent() {
                 </Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Property Limit</span>
+                <span className="text-[#666]">Property Limit</span>
                 <span>{subscription.property_limit}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">User Limit</span>
+                <span className="text-[#666]">User Limit</span>
                 <span>{subscription.user_limit}</span>
               </div>
             </div>
           )}
 
           {(!subscription || subscription.plan === "starter") && (
-            <div className="pt-4 border-t border-gray-100 space-y-2">
-              <p className="text-sm text-gray-500">Upgrade your plan to unlock more features.</p>
+            <div className="pt-4 border-t border-[#f0f0f0] space-y-2">
+              <p className="text-sm text-[#666]">Upgrade your plan to unlock more features.</p>
               <div className="flex gap-2">
                 <Button
                   onClick={() => handleUpgrade("professional_monthly")}
