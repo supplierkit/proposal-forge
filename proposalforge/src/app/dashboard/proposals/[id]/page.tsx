@@ -126,15 +126,13 @@ export default function ProposalDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           {/* Proposal sections preview */}
-          {sections.map((section: { id: string; title: string; type: string }) => (
+          {sections.map((section: { id: string; title: string; type: string; content: Record<string, unknown> }) => (
             <Card key={section.id}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm text-[#666]">{section.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-[#444]">
-                  {section.type === "cover" ? "Cover page" : "Content configured"}
-                </p>
+                <SectionContent section={section} />
               </CardContent>
             </Card>
           ))}
@@ -272,4 +270,83 @@ export default function ProposalDetailPage() {
       </div>
     </div>
   );
+}
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function SectionContent({ section }: { section: { type: string; content: Record<string, any> } }) {
+  const c = section.content;
+
+  if (section.type === "cover") {
+    if (c.event_name) {
+      return (
+        <div className="text-sm space-y-1">
+          <p className="font-medium text-[#111]">{c.event_name}</p>
+          {c.property_name && <p className="text-[#666]">{c.property_name}</p>}
+          {c.dates && <p className="text-[#666]">{c.dates}</p>}
+          {c.prepared_for && <p className="text-[#888] text-xs">Prepared for {c.prepared_for}</p>}
+        </div>
+      );
+    }
+    return <p className="text-sm text-[#444]">Cover page</p>;
+  }
+
+  if (section.type === "introduction" && c.text) {
+    return <p className="text-sm text-[#444] whitespace-pre-line">{c.text}</p>;
+  }
+
+  if ((section.type === "rooms" || section.type === "function_spaces" || section.type === "catering") && c.items) {
+    return (
+      <div className="text-sm space-y-3">
+        {c.summary && <p className="text-[#666]">{c.summary}</p>}
+        <div className="space-y-1.5">
+          {(c.items as any[]).map((item: any, i: number) => (
+            <div key={i} className="flex justify-between text-[#444] py-1 border-b border-[#f4f4f5] last:border-0">
+              <span>{item.type || item.space || item.item}{item.setup ? ` \u2014 ${item.setup}` : ""}</span>
+              <span className="font-medium">{formatCurrency(item.total)}</span>
+            </div>
+          ))}
+        </div>
+        {c.subtotal && (
+          <div className="flex justify-between font-medium text-[#111] pt-1">
+            <span>Subtotal</span>
+            <span>{formatCurrency(c.subtotal)}</span>
+          </div>
+        )}
+        {c.note && <p className="text-xs text-[#888] italic">{c.note}</p>}
+      </div>
+    );
+  }
+
+  if (section.type === "pricing_summary" && c.line_items) {
+    return (
+      <div className="text-sm space-y-3">
+        <div className="space-y-1.5">
+          {(c.line_items as any[]).map((item: any, i: number) => (
+            <div key={i} className="flex justify-between text-[#444] py-1 border-b border-[#f4f4f5] last:border-0">
+              <span>{item.category}</span>
+              <span className="font-medium">{formatCurrency(item.amount)}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between font-bold text-[#111] text-base pt-2 border-t border-[#e5e5e5]">
+          <span>Total</span>
+          <span className="text-[#059669]">{formatCurrency(c.grand_total)}</span>
+        </div>
+        {c.discount && <p className="text-xs text-[#888] italic">{c.discount}</p>}
+        {c.note && <p className="text-xs text-[#888]">{c.note}</p>}
+      </div>
+    );
+  }
+
+  if (section.type === "terms" && c.items) {
+    return (
+      <ul className="text-sm text-[#444] space-y-1 list-disc list-inside">
+        {(c.items as string[]).map((item: string, i: number) => (
+          <li key={i}>{item}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  return <p className="text-sm text-[#444]">Content configured</p>;
 }

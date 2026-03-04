@@ -33,7 +33,7 @@ const TOUR_STEPS: TourStep[] = [
     page: "/dashboard/properties",
     title: "Your hotel property",
     description:
-      "Here's the Grand Hotel Berlin — a 5-star property with 350 rooms, 4 room types, and 3 function spaces. Click on it to see the full details.",
+      "Here's the Grand Hotel Berlin \u2014 a 5-star property with 350 rooms, 4 room types, and 3 function spaces. Click on it to see the full details.",
     action: "/dashboard/properties/demo-property-001",
   },
   {
@@ -49,7 +49,7 @@ const TOUR_STEPS: TourStep[] = [
     page: "/dashboard/leads",
     title: "Your lead pipeline",
     description:
-      "Here's your pipeline — from new inquiries to won deals. Toggle between Board and List views. Click the \"European Tech Summit\" lead to see the details.",
+      "Here's your pipeline \u2014 from new inquiries to won deals. Toggle between Board and List views. Click the \"European Tech Summit\" lead to see the details.",
     action: "/dashboard/leads/demo-lead-002",
   },
   {
@@ -57,34 +57,27 @@ const TOUR_STEPS: TourStep[] = [
     page: "/dashboard/leads/demo-lead-002",
     title: "Generate an AI proposal",
     description:
-      "This is where the magic happens. Review the event details, then click \"Generate AI Proposal\" to create a professional proposal in seconds. (In this demo, the button is shown but requires an API key to function.)",
-  },
-  {
-    id: "proposals-nav",
-    page: "/dashboard/leads/demo-lead-002",
-    title: "Check your proposals",
-    description:
-      "Click \"Proposals\" in the sidebar to see all generated proposals and their statuses.",
+      "This is where Kit works its magic. Click \"Generate AI Proposal\" and Kit analyzes the lead requirements \u2014 350 attendees, keynote hall, exhibition space, networking dinner \u2014 and creates a tailored proposal in seconds. Kit has already generated one for this event. Let's go see it.",
     action: "/dashboard/proposals",
   },
   {
     id: "proposals-overview",
     page: "/dashboard/proposals",
-    title: "Track every proposal",
+    title: "Kit's generated proposals",
     description:
-      "See the status of each proposal — Draft, Sent, Viewed, Accepted, or Declined. Click the ACME Corp proposal to see the full details.",
-    action: "/dashboard/proposals/demo-proposal-001",
+      "Here are all proposals Kit has generated. Notice the \"European Tech Summit 2026\" proposal \u2014 Kit created it from the lead we just viewed. It's been sent to Marcus Weber and already viewed. Click it to review the full proposal.",
+    action: "/dashboard/proposals/demo-proposal-002",
   },
   {
     id: "proposal-detail",
-    page: "/dashboard/proposals/demo-proposal-001",
-    title: "Send, preview, and track",
+    page: "/dashboard/proposals/demo-proposal-002",
+    title: "Review Kit's proposal",
     description:
-      "From here you can send the proposal via email, preview the interactive client-facing page, copy the share link, and track when clients view it. The ACME proposal was viewed 3 times before being accepted.",
+      "Kit generated a complete proposal: 600 room nights, Grand Ballroom for the keynote, Garden Terrace for the exhibition, full catering, and a \u20AC72,000 investment summary. You can send it, preview the client-facing page, or copy the share link.",
   },
   {
     id: "analytics-nav",
-    page: "/dashboard/proposals/demo-proposal-001",
+    page: "/dashboard/proposals/demo-proposal-002",
     title: "View your analytics",
     description:
       "Click \"Analytics\" in the sidebar to see performance metrics across your pipeline.",
@@ -97,12 +90,42 @@ const TOUR_STEPS: TourStep[] = [
     description:
       "Track proposals sent, win rates, response times, and pipeline stages. Use these insights to improve your conversion.",
   },
+  // Configure section steps
+  {
+    id: "configure-nav",
+    page: "/dashboard/analytics",
+    title: "Configure your workflow",
+    description:
+      "Click \"Configure\" in the sidebar to set up integrations, templates, and automated actions.",
+    action: "/dashboard/configure",
+  },
+  {
+    id: "configure-integrations",
+    page: "/dashboard/configure",
+    title: "Integrations",
+    description:
+      "This is where SupplierKit connects to your existing systems. Inbound integrations (PMS, website forms, ITB API) feed lead data in. Outbound integrations (email, CRM) push generated proposals out. Kit runs autonomously between them.",
+  },
+  {
+    id: "configure-templates",
+    page: "/dashboard/configure",
+    title: "Templates",
+    description:
+      "Define what Kit's proposals look like \u2014 brand settings, default sections, pricing guidance, and inclusions. Kit follows these rules when generating every proposal, so output is always on-brand and on-policy.",
+  },
+  {
+    id: "configure-kit-actions",
+    page: "/dashboard/configure",
+    title: "Kit Actions",
+    description:
+      "Control what Kit does automatically: confirm details with submitters, flag out-of-policy proposals, send follow-up nudges, and keep communication warm. Toggle each action on or off.",
+  },
   {
     id: "complete",
-    page: "/dashboard/analytics",
+    page: "/dashboard/configure",
     title: "Tour complete!",
     description:
-      "You've seen the full SupplierKit workflow: manage properties, capture leads, generate AI proposals, send & track them, and analyze performance. Ready to get started?",
+      "You've seen the full SupplierKit workflow: manage properties, capture leads, let Kit generate and send proposals, track performance, and configure integrations and automations. Ready to get started?",
   },
 ];
 

@@ -12,7 +12,7 @@ import {
   Users,
   FileText,
   BarChart3,
-  Settings,
+  SlidersHorizontal,
   LogOut,
   Target,
 } from "lucide-react";
@@ -24,7 +24,7 @@ const navigation = [
   { name: "Proposals", href: "/dashboard/proposals", icon: FileText },
   { name: "Contacts", href: "/dashboard/contacts", icon: Users },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Configure", href: "/dashboard/configure", icon: SlidersHorizontal },
 ];
 
 export function Sidebar() {
