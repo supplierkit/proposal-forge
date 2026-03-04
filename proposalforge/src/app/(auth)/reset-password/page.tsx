@@ -38,13 +38,13 @@ export default function ResetPasswordPage() {
     return (
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Check your email</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-[22px] font-bold tracking-tight text-[#111]">Check your email</CardTitle>
+          <CardDescription className="text-[14px] text-[#444]">
             We sent a password reset link to <strong>{email}</strong>
           </CardDescription>
         </CardHeader>
         <CardFooter className="justify-center">
-          <Link href="/login" className="text-sm text-blue-600 hover:underline">
+          <Link href="/login" className="text-[14px] text-primary hover:underline">
             Back to sign in
           </Link>
         </CardFooter>
@@ -55,15 +55,15 @@ export default function ResetPasswordPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Reset your password</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-[22px] font-bold tracking-tight text-[#111]">Reset your password</CardTitle>
+        <CardDescription className="text-[14px] text-[#444]">
           Enter your email and we&apos;ll send you a reset link
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleReset}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-md bg-red-50 p-3 text-[14px] text-[#DC2626]">
               {error}
             </div>
           )}
@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Sending..." : "Send reset link"}
           </Button>
-          <Link href="/login" className="text-sm text-blue-600 hover:underline">
+          <Link href="/login" className="text-[14px] text-primary hover:underline">
             Back to sign in
           </Link>
         </CardFooter>

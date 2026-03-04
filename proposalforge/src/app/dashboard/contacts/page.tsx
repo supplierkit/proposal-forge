@@ -36,7 +36,7 @@ export default function ContactsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Contacts</h1>
+        <h1 className="text-[22px] font-bold tracking-tight text-[#111]">Contacts</h1>
       </div>
 
       <div className="mb-4">
@@ -56,22 +56,22 @@ export default function ContactsPage() {
         </CardHeader>
         <CardContent>
           {filtered.length === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">
+            <p className="text-sm text-[#666] py-4 text-center">
               No contacts found. Contacts are created automatically when you add leads.
             </p>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-[#f0f0f0]">
               {filtered.map((contact) => (
                 <div
                   key={contact.id}
                   className="flex items-center justify-between py-3"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-[#111]">
                       {contact.first_name} {contact.last_name}
                     </p>
                     {contact.company_name && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-[#666]">
                         {contact.company_name}
                         {contact.title ? ` — ${contact.title}` : ""}
                       </p>
@@ -81,13 +81,13 @@ export default function ContactsPage() {
                     {contact.email && (
                       <Link
                         href={`mailto:${contact.email}`}
-                        className="text-blue-600 hover:underline block"
+                        className="text-primary hover:underline block"
                       >
                         {contact.email}
                       </Link>
                     )}
                     {contact.phone && (
-                      <p className="text-gray-500">{contact.phone}</p>
+                      <p className="text-[#666]">{contact.phone}</p>
                     )}
                   </div>
                 </div>

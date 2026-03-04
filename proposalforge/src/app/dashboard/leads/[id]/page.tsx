@@ -61,7 +61,7 @@ export default function LeadDetailPage() {
     }
   }
 
-  if (!lead) return <div className="text-gray-500">Loading...</div>;
+  if (!lead) return <div className="text-[#666]">Loading...</div>;
 
   const statusColors: Record<string, "default" | "warning" | "success" | "destructive" | "secondary"> = {
     new: "default",
@@ -75,17 +75,17 @@ export default function LeadDetailPage() {
   return (
     <div className="max-w-3xl">
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => router.back()} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+        <button onClick={() => router.back()} className="text-[#888] hover:text-[#444] cursor-pointer">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">{lead.event_name}</h1>
+        <h1 className="text-[22px] font-bold tracking-tight text-[#111]">{lead.event_name}</h1>
         <Badge variant={statusColors[lead.status] ?? "secondary"}>
           {lead.status.replace("_", " ")}
         </Badge>
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 mb-4">{error}</div>
+        <div className="rounded-md bg-[#DC2626]/10 p-3 text-sm text-[#DC2626] mb-4">{error}</div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -96,16 +96,16 @@ export default function LeadDetailPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Property</span>
+                <span className="text-[#666]">Property</span>
                 <span>{lead.properties?.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Type</span>
+                <span className="text-[#666]">Type</span>
                 <span className="capitalize">{lead.event_type}</span>
               </div>
               {lead.event_start_date && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Dates</span>
+                  <span className="text-[#666]">Dates</span>
                   <span>
                     {formatDate(lead.event_start_date)}
                     {lead.event_end_date && ` - ${formatDate(lead.event_end_date)}`}
@@ -114,26 +114,26 @@ export default function LeadDetailPage() {
               )}
               {lead.estimated_attendees && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Attendees</span>
+                  <span className="text-[#666]">Attendees</span>
                   <span>{lead.estimated_attendees}</span>
                 </div>
               )}
               {lead.estimated_room_nights && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Room Nights</span>
+                  <span className="text-[#666]">Room Nights</span>
                   <span>{lead.estimated_room_nights}</span>
                 </div>
               )}
               {lead.estimated_value && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Estimated Value</span>
-                  <span className="font-medium text-green-700">{formatCurrency(lead.estimated_value)}</span>
+                  <span className="text-[#666]">Estimated Value</span>
+                  <span className="font-medium text-[#059669]">{formatCurrency(lead.estimated_value)}</span>
                 </div>
               )}
               {lead.requirements && (
-                <div className="pt-2 border-t border-gray-100">
-                  <span className="text-gray-500 block mb-1">Requirements</span>
-                  <p className="text-gray-700 whitespace-pre-wrap">{lead.requirements}</p>
+                <div className="pt-2 border-t border-[#f0f0f0]">
+                  <span className="text-[#666] block mb-1">Requirements</span>
+                  <p className="text-[#444] whitespace-pre-wrap">{lead.requirements}</p>
                 </div>
               )}
             </CardContent>
@@ -161,16 +161,16 @@ export default function LeadDetailPage() {
                   {lead.contacts.first_name} {lead.contacts.last_name}
                 </p>
                 {lead.contacts.company_name && (
-                  <p className="text-gray-500">{lead.contacts.company_name}</p>
+                  <p className="text-[#666]">{lead.contacts.company_name}</p>
                 )}
                 {lead.contacts.email && (
                   <p>
-                    <Link href={`mailto:${lead.contacts.email}`} className="text-blue-600 hover:underline">
+                    <Link href={`mailto:${lead.contacts.email}`} className="text-primary hover:underline">
                       {lead.contacts.email}
                     </Link>
                   </p>
                 )}
-                {lead.contacts.phone && <p className="text-gray-600">{lead.contacts.phone}</p>}
+                {lead.contacts.phone && <p className="text-[#444]">{lead.contacts.phone}</p>}
               </CardContent>
             </Card>
           )}
@@ -179,10 +179,10 @@ export default function LeadDetailPage() {
             <CardHeader>
               <CardTitle className="text-lg">Timeline</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-gray-500">
+            <CardContent className="text-sm text-[#666]">
               <p>Created {formatDate(lead.created_at)}</p>
-              {lead.won_at && <p className="text-green-600">Won {formatDate(lead.won_at)}</p>}
-              {lead.lost_at && <p className="text-red-600">Lost {formatDate(lead.lost_at)}</p>}
+              {lead.won_at && <p className="text-[#059669]">Won {formatDate(lead.won_at)}</p>}
+              {lead.lost_at && <p className="text-[#DC2626]">Lost {formatDate(lead.lost_at)}</p>}
             </CardContent>
           </Card>
         </div>
