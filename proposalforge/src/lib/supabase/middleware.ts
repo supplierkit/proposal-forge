@@ -3,7 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   // Skip all auth checks when auth is disabled (demo mode)
-  if (process.env.NEXT_PUBLIC_AUTH_DISABLED === "true") {
+  // Auth is disabled by default; set NEXT_PUBLIC_AUTH_DISABLED=false to re-enable
+  if (process.env.NEXT_PUBLIC_AUTH_DISABLED !== "false") {
     return NextResponse.next({ request });
   }
 

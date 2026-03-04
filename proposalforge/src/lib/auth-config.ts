@@ -1,5 +1,8 @@
+// Demo mode toggle.
+// Default: demo mode ON (auth disabled).
+// To re-enable auth: set NEXT_PUBLIC_AUTH_DISABLED=false in env vars.
 export const AUTH_DISABLED =
-  process.env.NEXT_PUBLIC_AUTH_DISABLED === "true";
+  process.env.NEXT_PUBLIC_AUTH_DISABLED !== "false";
 
 export const DEMO_USER = {
   id: "00000000-0000-0000-0000-000000000000",
