@@ -2,7 +2,8 @@
 
 import { useTour } from "./tour-provider";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X, Sparkles, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, RotateCcw } from "lucide-react";
+import { SupplierKitIcon } from "@/components/ui/supplierkit-logo";
 
 export function TourPanel() {
   const { currentStep, currentStepIndex, steps, isActive, nextStep, prevStep, endTour, startTour } =
@@ -47,7 +48,7 @@ export function TourPanel() {
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <SupplierKitIcon className="h-3.5 w-3.5" />
               </div>
               <span className="text-xs font-medium text-[#888]">
                 Step {currentStepIndex + 1} of {steps.length}

@@ -16,7 +16,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: "welcome",
     page: "/dashboard",
-    title: "Welcome to ProposalForge",
+    title: "Welcome to SupplierKit",
     description:
       "This is your command center. The dashboard shows your properties, active leads, proposals sent, and revenue won at a glance.",
   },
@@ -102,7 +102,7 @@ const TOUR_STEPS: TourStep[] = [
     page: "/dashboard/analytics",
     title: "Tour complete!",
     description:
-      "You've seen the full ProposalForge workflow: manage properties, capture leads, generate AI proposals, send & track them, and analyze performance. Ready to get started?",
+      "You've seen the full SupplierKit workflow: manage properties, capture leads, generate AI proposals, send & track them, and analyze performance. Ready to get started?",
   },
 ];
 
