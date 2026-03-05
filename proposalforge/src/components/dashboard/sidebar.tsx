@@ -16,7 +16,6 @@ import {
   LogOut,
   Target,
   Bot,
-  MessageSquare,
   ClipboardCheck,
   BookOpen,
 } from "lucide-react";
@@ -28,14 +27,13 @@ const navigation = [
   { name: "Proposals", href: "/dashboard/proposals", icon: FileText },
   { name: "Contacts", href: "/dashboard/contacts", icon: Users },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Configure", href: "/dashboard/configure", icon: SlidersHorizontal },
 ];
 
-const agentNavigation = [
-  { name: "AI Agents", href: "/dashboard/agents", icon: Bot },
-  { name: "AskSupplierKit", href: "/dashboard/ask", icon: MessageSquare },
+const secondaryNavigation = [
+  { name: "AI Activity", href: "/dashboard/agents", icon: Bot },
   { name: "Obligations", href: "/dashboard/obligations", icon: ClipboardCheck },
   { name: "Playbooks", href: "/dashboard/playbooks", icon: BookOpen },
+  { name: "Configure", href: "/dashboard/configure", icon: SlidersHorizontal },
 ];
 
 export function Sidebar() {
@@ -79,11 +77,8 @@ export function Sidebar() {
           })}
         </div>
         <div className="mt-4 pt-4 border-t border-[#eee]">
-          <p className="px-3 mb-2 text-[11px] font-medium uppercase tracking-widest text-[#999]">
-            AI & Automation
-          </p>
           <div className="space-y-1">
-            {agentNavigation.map((item) => {
+            {secondaryNavigation.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== "/dashboard" && pathname.startsWith(item.href));

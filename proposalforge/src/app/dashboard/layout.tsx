@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { AskWidget } from "@/components/dashboard/ask-widget";
 import { TourProvider } from "@/components/walkthrough/tour-provider";
 import { TourPanel } from "@/components/walkthrough/tour-panel";
 import { AUTH_DISABLED } from "@/lib/auth-config";
@@ -14,6 +15,7 @@ export default function DashboardLayout({
       <main className="flex-1 overflow-auto bg-[#F6F7F8]">
         <div className="p-8">{children}</div>
       </main>
+      <AskWidget />
     </div>
   );
 
