@@ -15,6 +15,10 @@ import {
   SlidersHorizontal,
   LogOut,
   Target,
+  Bot,
+  MessageSquare,
+  ClipboardCheck,
+  BookOpen,
 } from "lucide-react";
 
 const navigation = [
@@ -25,6 +29,13 @@ const navigation = [
   { name: "Contacts", href: "/dashboard/contacts", icon: Users },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Configure", href: "/dashboard/configure", icon: SlidersHorizontal },
+];
+
+const agentNavigation = [
+  { name: "AI Agents", href: "/dashboard/agents", icon: Bot },
+  { name: "AskSupplierKit", href: "/dashboard/ask", icon: MessageSquare },
+  { name: "Obligations", href: "/dashboard/obligations", icon: ClipboardCheck },
+  { name: "Playbooks", href: "/dashboard/playbooks", icon: BookOpen },
 ];
 
 export function Sidebar() {
@@ -44,27 +55,56 @@ export function Sidebar() {
         <SupplierKitLogo />
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {navigation.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname.startsWith(item.href));
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-[14px] font-medium transition-colors",
-                isActive
-                  ? "bg-secondary text-primary"
-                  : "text-[#444] hover:bg-[#FAFAFA] hover:text-[#111]"
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.name}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-auto px-3 py-4">
+        <div className="space-y-1">
+          {navigation.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-[14px] font-medium transition-colors",
+                  isActive
+                    ? "bg-secondary text-primary"
+                    : "text-[#444] hover:bg-[#FAFAFA] hover:text-[#111]"
+                )}
+              >
+                <item.icon className="h-5 w-5" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
+        <div className="mt-4 pt-4 border-t border-[#eee]">
+          <p className="px-3 mb-2 text-[11px] font-medium uppercase tracking-widest text-[#999]">
+            AI & Automation
+          </p>
+          <div className="space-y-1">
+            {agentNavigation.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/dashboard" && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-[14px] font-medium transition-colors",
+                    isActive
+                      ? "bg-secondary text-primary"
+                      : "text-[#444] hover:bg-[#FAFAFA] hover:text-[#111]"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </nav>
 
       {!AUTH_DISABLED && (

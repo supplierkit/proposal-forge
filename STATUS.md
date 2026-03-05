@@ -1,8 +1,8 @@
 # Status Report
 
-## Current Phase: Phase 2 — Architecture & Technical Design (CHECKPOINT)
+## Current Phase: Phase 3+ — Agent System Expansion (CHECKPOINT)
 
-**Date:** 2026-03-03
+**Date:** 2026-03-05
 
 ## What Was Done
 
@@ -13,67 +13,120 @@
 - 4 business ideas researched and scored. **ProposalForge** selected (hotel group sales proposal automation).
 - VALIDATION.md created with demand signals, competitor pricing, and ITB Berlin overlap.
 
-### Phase 2 (Complete — Awaiting Approval)
+### Phase 2 (Complete — Approved)
+- ARCHITECTURE.md, TECH_STACK.md, MVP_SCOPE.md created.
 
-1. **ARCHITECTURE.md** — Full system architecture including:
-   - System architecture diagram (Mermaid) — client, application, data, and external service layers
-   - Complete data model — 13 entities with all fields and relationships (Organization, Property, RoomType, FunctionSpace, CateringPackage, Lead, Contact, Template, Proposal, ProposalSection, ProposalView, User, Subscription, Activity)
-   - REST API design — 30+ endpoints with auth, rate limiting, response format, and RBAC
-   - Third-party integration plan (Supabase, Stripe, Claude API, Resend, Vercel)
-   - Infrastructure plan with environment strategy and cost estimates (~$130-330/month at launch)
-   - Security model — JWT auth, RBAC (4 roles), RLS multi-tenancy, GDPR compliance, input validation
+### Phase 3 MVP (Complete — Approved)
+- Full Next.js 16 application built with 30+ API endpoints, 14 database tables, and 6 dashboard pages.
+- SupplierKit branding applied. Demo mode with guided walkthrough.
 
-2. **TECH_STACK.md** — Technology choices with justifications:
-   - Next.js 15 (App Router) + TypeScript (strict) + Tailwind CSS + shadcn/ui
-   - Supabase (PostgreSQL + Auth + Storage + Realtime)
-   - Claude API for AI generation, Stripe for billing, Resend for email
-   - Vercel for hosting, Vitest + Playwright for testing
-   - All alternatives considered and reasoning documented
+### Phase 3+ Agent System Expansion (Complete — Awaiting Approval)
 
-3. **MVP_SCOPE.md** — Feature scope with explicit boundaries:
-   - **ONE feature**: AI-powered interactive proposal creation and delivery
-   - 10 MVP features defined with acceptance criteria
-   - Explicit out-of-scope list (PMS integration, Cvent, e-signatures, etc.)
-   - 4-week build order broken into weekly milestones
-   - Success criteria (< 10 min to first proposal, > 80% test coverage)
+Inspired by Sirion's AI-native CLM platform (AgentOS), adapted for hotel group sales:
+
+#### 1. Agent System Architecture
+- **Database migration** (`00002_agent_system.sql`) — 4 new tables: `playbooks`, `agent_runs`, `obligations`, `chat_messages`
+- **4 new enums** — `agent_type`, `agent_run_status`, `obligation_status`, `obligation_category`, `chat_role`
+- **Row-Level Security** on all new tables
+- **Indexes** on all foreign keys and frequently filtered columns
+- **TypeScript types** (`src/types/agents.ts`) — Full type definitions for all agent inputs/outputs
+
+#### 2. Four Purpose-Built AI Agents
+| Agent | Sirion Parallel | What It Does |
+|---|---|---|
+| **RFP Intake Agent** | Extraction Agent | Pastes/uploads RFPs → extracts structured event requirements → auto-creates leads + contacts |
+| **Pricing Intelligence Agent** | N/A (new for travel) | Analyzes historical win/loss data, seasonal patterns, playbook guardrails → recommends optimal pricing |
+| **Compliance Agent** | Issue Detection Agent + Redline Agent | Validates proposals against playbook: pricing bands, required sections, brand standards, approval thresholds |
+| **AskSupplierKit** | AskSirion (conversational AI) | Chat interface for pipeline insights, proposal performance, obligation status, and ad-hoc questions |
+
+#### 3. Playbook System (Sirion's Playbook Agent)
+- Define selling standards per organization
+- Pricing guardrails (min/max discount %, min room block)
+- Required proposal sections
+- Brand tone guidelines, prohibited/required terms
+- Approval thresholds (auto-approve below X, manager sign-off above Y)
+- Seasonal pricing rules (ITB Berlin season: 1.4x, Summer: 1.2x, Christmas: 1.3x)
+
+#### 4. Obligation Tracking (Sirion's Obligation/SLA Management)
+- Track every promise in accepted proposals
+- Categories: room blocks, function spaces, catering, AV, transportation, billing, special requests
+- Status tracking: pending → in_progress → fulfilled (or at_risk / overdue)
+- Fulfillment percentage with progress bars
+- Due date monitoring
+
+#### 5. Conversational AI (AskSupplierKit)
+- Full chat interface with message history
+- Context-aware: accesses proposals, leads, properties, and obligations
+- Suggested questions for quick insights
+- Source references linking back to actual data
+- Suggested actions for follow-up
+
+#### 6. UI Pages (4 new dashboard pages)
+- `/dashboard/agents` — Agent overview with cards, run history, and individual agent interfaces
+- `/dashboard/ask` — AskSupplierKit chat interface
+- `/dashboard/obligations` — Obligation tracker with stats, progress bars, status badges
+- `/dashboard/playbooks` — Playbook viewer with pricing guardrails, approval rules, brand standards
+
+#### 7. Navigation Update
+- Sidebar now has "AI & Automation" section with 4 new nav items
+- Separated from core workflow nav for clarity
 
 ## Files Created or Modified
 
 | File | Action | Description |
 |---|---|---|
-| `ARCHITECTURE.md` | Created | System architecture, data model, API design, security model |
-| `TECH_STACK.md` | Created | Technology choices with justifications |
-| `MVP_SCOPE.md` | Created | MVP feature scope, build order, success criteria |
-| `STATUS.md` | Updated | This status report |
+| `supabase/migrations/00002_agent_system.sql` | Created | Database migration for agent system (4 tables, 5 enums, RLS, indexes) |
+| `src/types/agents.ts` | Created | TypeScript types for all agent system entities |
+| `src/lib/agents/runner.ts` | Created | Agent orchestration — 4 AI agents with Claude API integration |
+| `src/lib/demo-agents.ts` | Created | Demo data for playbook, agent runs, obligations, sample RFP |
+| `src/lib/validations.ts` | Modified | Added 8 new Zod schemas for agent system |
+| `src/app/api/v1/agents/rfp-intake/route.ts` | Created | RFP Intake agent API endpoint |
+| `src/app/api/v1/agents/pricing/route.ts` | Created | Pricing Intelligence agent API endpoint |
+| `src/app/api/v1/agents/compliance/route.ts` | Created | Compliance Check agent API endpoint |
+| `src/app/api/v1/agents/ask/route.ts` | Created | AskSupplierKit chat API endpoint |
+| `src/app/api/v1/agents/runs/route.ts` | Created | Agent run history API endpoint |
+| `src/app/api/v1/playbooks/route.ts` | Created | Playbook CRUD API endpoint |
+| `src/app/api/v1/obligations/route.ts` | Created | Obligation CRUD API endpoint |
+| `src/app/dashboard/agents/page.tsx` | Created | AI Agents dashboard page |
+| `src/app/dashboard/ask/page.tsx` | Created | AskSupplierKit chat page |
+| `src/app/dashboard/obligations/page.tsx` | Created | Obligation tracking page |
+| `src/app/dashboard/playbooks/page.tsx` | Created | Playbook management page |
+| `src/components/dashboard/sidebar.tsx` | Modified | Added "AI & Automation" navigation section |
 
-## External Services Planned
+## External Services
 
 | Service | Purpose | Cost |
 |---------|---------|------|
 | Supabase Pro | Database, Auth, Storage | $25/month |
 | Vercel Pro | Hosting | $20/month |
-| Claude API | AI proposal generation | ~$50-200/month |
+| Claude API | AI agents (4 agents now) | ~$100-400/month (increased usage) |
 | Resend Pro | Email delivery | $20/month |
 | Stripe | Billing | 2.9% + $0.30/txn |
 
-## Dependencies Planned
+## Dependencies Added
 
-See TECH_STACK.md for full list. Key packages: Next.js 15, Supabase client, Stripe SDK, Zod, shadcn/ui components, @react-pdf/renderer, Vitest, Playwright.
+No new npm dependencies. Agent system uses existing `@anthropic-ai/sdk` for Claude API calls.
 
 ## Risks
 
 | Risk | Severity | Mitigation |
 |---|---|---|
-| AI generation quality for proposals | Medium | Human-in-the-loop editing; test with real hotel data |
-| Supabase RLS complexity | Low | Well-documented pattern; test with multi-tenant scenarios |
-| Scope creep during build | Medium | MVP_SCOPE.md explicitly lists what's out of scope |
-| 4-week timeline ambitious | Medium | Core product (weeks 1-2) delivers value; week 3-4 is business layer and polish |
+| Agent API costs scale with usage | Medium | Rate limiting per org. Usage-based pricing tiers. |
+| RFP extraction accuracy varies | Medium | Confidence score filtering (>60% to auto-create leads). Human review step. |
+| Playbook enforcement too rigid | Low | Warnings vs. hard blocks. Managers can override. |
+| Chat context window limits | Low | Limit to 20 most recent messages per session. |
+
+## Business Impact
+
+The agent system expansion transforms SupplierKit from a **proposal generator** into a **proposal lifecycle management platform** — mirroring Sirion's proven enterprise CLM model. This:
+
+1. **Increases ACV** — More features = higher pricing justification ($24K-$60K/year)
+2. **Creates workflow lock-in** — Playbooks, obligations, and historical data create switching costs
+3. **Builds a data moat** — Every proposal, win/loss, and pricing decision trains better recommendations
+4. **Addresses the full RFP-to-close pipeline** — Not just one step, but intake → pricing → compliance → delivery
+5. **Validates enterprise readiness** — Multi-agent architecture, audit trails, role-based access
 
 ## Next Steps
 
-- **AWAITING HUMAN APPROVAL** of architecture, tech stack, and MVP scope
-- Upon approval, proceed to **Phase 3: Build MVP**
-  - Week 1: Foundation (project setup, auth, property management)
-  - Week 2: Core product (leads, AI proposals, proposal viewer)
-  - Week 3: Business layer (analytics, billing, dashboard, onboarding, landing page)
-  - Week 4: Testing, security review, staging deploy
+- **AWAITING HUMAN APPROVAL** of agent system expansion
+- Upon approval: Phase 4 (GTM preparation) with updated product positioning reflecting the expanded platform

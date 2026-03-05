@@ -141,3 +141,90 @@ export type LeadInput = z.infer<typeof leadSchema>;
 export type GenerateProposalInput = z.infer<typeof generateProposalSchema>;
 export type ProposalInput = z.infer<typeof proposalSchema>;
 export type SendProposalInput = z.infer<typeof sendProposalSchema>;
+
+// ============================================
+// AGENT SYSTEM VALIDATIONS
+// ============================================
+
+// RFP Intake
+export const rfpIntakeSchema = z.object({
+  raw_text: z.string().min(10, "RFP text must be at least 10 characters"),
+  source: z.enum(["email", "pdf", "cvent", "manual", "web_form"]).optional(),
+  property_id: z.string().uuid("Property is required"),
+});
+
+// Pricing Intelligence
+export const pricingAgentSchema = z.object({
+  lead_id: z.string().uuid("Lead is required"),
+  property_id: z.string().uuid("Property is required"),
+});
+
+// Compliance Check
+export const complianceAgentSchema = z.object({
+  proposal_id: z.string().uuid("Proposal is required"),
+  playbook_id: z.string().uuid("Playbook is required"),
+});
+
+// AskSupplierKit
+export const askAgentSchema = z.object({
+  question: z.string().min(3, "Question must be at least 3 characters"),
+  session_id: z.string().uuid().optional(),
+  context: z.object({
+    property_id: z.string().uuid().optional(),
+    lead_id: z.string().uuid().optional(),
+    proposal_id: z.string().uuid().optional(),
+  }).optional(),
+});
+
+// Playbook
+export const playbookSchema = z.object({
+  name: z.string().min(2, "Playbook name is required"),
+  description: z.string().optional(),
+  is_active: z.boolean().default(true),
+  min_group_discount_pct: z.number().min(0).max(100).optional(),
+  max_group_discount_pct: z.number().min(0).max(100).optional(),
+  min_room_block_nights: z.number().int().positive().optional(),
+  required_sections: z.array(z.string()).default(["cover", "introduction", "rooms", "function_spaces", "catering", "pricing_summary", "terms"]),
+  tone_guidelines: z.string().optional(),
+  prohibited_terms: z.array(z.string()).default([]),
+  required_terms: z.array(z.string()).default([]),
+  auto_approve_below: z.number().positive().optional(),
+  require_manager_above: z.number().positive().optional(),
+  seasonal_rules: z.array(z.object({
+    name: z.string(),
+    start: z.string(),
+    end: z.string(),
+    min_rate_multiplier: z.number().positive(),
+  })).default([]),
+});
+
+// Obligation
+export const obligationSchema = z.object({
+  proposal_id: z.string().uuid("Proposal is required"),
+  lead_id: z.string().uuid("Lead is required"),
+  property_id: z.string().uuid("Property is required"),
+  category: z.enum(["room_block", "function_space", "catering", "av_equipment", "transportation", "special_request", "billing", "other"]),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  status: z.enum(["pending", "in_progress", "fulfilled", "at_risk", "overdue", "waived"]).default("pending"),
+  promised_value: z.record(z.string(), z.unknown()).optional(),
+  due_date: z.string().optional(),
+  assigned_to: z.string().uuid().optional(),
+  notes: z.string().optional(),
+});
+
+export const obligationUpdateSchema = z.object({
+  status: z.enum(["pending", "in_progress", "fulfilled", "at_risk", "overdue", "waived"]).optional(),
+  actual_value: z.record(z.string(), z.unknown()).optional(),
+  fulfillment_pct: z.number().min(0).max(100).optional(),
+  fulfilled_at: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export type RfpIntakeInput = z.infer<typeof rfpIntakeSchema>;
+export type PricingAgentInput = z.infer<typeof pricingAgentSchema>;
+export type ComplianceAgentInput = z.infer<typeof complianceAgentSchema>;
+export type AskAgentInput = z.infer<typeof askAgentSchema>;
+export type PlaybookInput = z.infer<typeof playbookSchema>;
+export type ObligationInput = z.infer<typeof obligationSchema>;
+export type ObligationUpdateInput = z.infer<typeof obligationUpdateSchema>;
