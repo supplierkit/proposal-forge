@@ -9,11 +9,37 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Send, ExternalLink, Eye, Copy } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  ExternalLink,
+  Eye,
+  Copy,
+  ShieldCheck,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Lightbulb,
+} from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { ProposalStatus } from "@/types/database";
 import { AUTH_DISABLED } from "@/lib/auth-config";
 import { DEMO_PROPOSALS, DEMO_PROPOSAL_VIEWS } from "@/lib/demo-data";
+import { DEMO_PLAYBOOK } from "@/lib/demo-agents";
+
+interface ComplianceResult {
+  overall_score: number;
+  status: "pass" | "warning" | "fail";
+  issues: { severity: "error" | "warning" | "info"; category: string; message: string; suggestion: string }[];
+  missing_sections: string[];
+  pricing_analysis: { within_guardrails: boolean; notes: string };
+  brand_compliance: { score: number; notes: string };
+  approval_required: boolean;
+  approval_reason?: string;
+}
 
 const STATUS_BADGE: Record<ProposalStatus, { label: string; variant: "default" | "secondary" | "success" | "warning" | "destructive" }> = {
   draft: { label: "Draft", variant: "secondary" },
@@ -36,6 +62,12 @@ export default function ProposalDetailPage() {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Compliance check state
+  const [complianceOpen, setComplianceOpen] = useState(false);
+  const [complianceLoading, setComplianceLoading] = useState(false);
+  const [compliance, setCompliance] = useState<ComplianceResult | null>(null);
+  const [complianceError, setComplianceError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -62,6 +94,33 @@ export default function ProposalDetailPage() {
     }
     fetchData();
   }, [params.id, supabase]);
+
+  async function handleComplianceCheck() {
+    if (!proposal) return;
+    setComplianceLoading(true);
+    setComplianceError(null);
+
+    try {
+      const res = await fetch("/api/v1/agents/compliance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          proposal_id: proposal.id,
+          playbook_id: DEMO_PLAYBOOK.id,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.data?.compliance) {
+        setCompliance(data.data.compliance);
+      } else {
+        setComplianceError("Could not run compliance check.");
+      }
+    } catch {
+      setComplianceError("Failed to run compliance check.");
+    }
+    setComplianceLoading(false);
+  }
 
   async function handleSend(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -113,6 +172,12 @@ export default function ProposalDetailPage() {
     (a: any, b: any) => a.sort_order - b.sort_order
   );
 
+  const complianceStatusConfig = {
+    pass: { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", label: "Compliant" },
+    warning: { icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50", label: "Warnings" },
+    fail: { icon: XCircle, color: "text-red-600", bg: "bg-red-50", label: "Issues Found" },
+  };
+
   return (
     <div className="max-w-4xl">
       <div className="flex items-center gap-3 mb-6">
@@ -136,6 +201,136 @@ export default function ProposalDetailPage() {
               </CardContent>
             </Card>
           ))}
+
+          {/* Compliance Check — Embedded before Send */}
+          <Card className="border-amber-100">
+            <CardHeader className="cursor-pointer" onClick={() => { setComplianceOpen(!complianceOpen); if (!compliance && !complianceLoading) handleComplianceCheck(); }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+                    <ShieldCheck className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-[15px]">Compliance Check</CardTitle>
+                    <p className="text-[12px] text-[#888]">Validate against your selling playbook before sending</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {compliance && (
+                    <Badge
+                      variant={compliance.status === "pass" ? "success" : compliance.status === "warning" ? "warning" : "destructive"}
+                      className="text-[11px]"
+                    >
+                      {compliance.overall_score}/100
+                    </Badge>
+                  )}
+                  {complianceOpen ? <ChevronUp className="h-4 w-4 text-[#888]" /> : <ChevronDown className="h-4 w-4 text-[#888]" />}
+                </div>
+              </div>
+            </CardHeader>
+            {complianceOpen && (
+              <CardContent>
+                {complianceLoading && (
+                  <div className="flex items-center gap-2 py-4 text-[#666]">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-[13px]">Checking pricing, sections, brand standards, and approval rules...</span>
+                  </div>
+                )}
+                {complianceError && (
+                  <div className="text-[13px] text-[#DC2626] py-2">{complianceError}</div>
+                )}
+                {compliance && (() => {
+                  const cfg = complianceStatusConfig[compliance.status];
+                  const StatusIcon = cfg.icon;
+                  return (
+                    <div className="space-y-4">
+                      {/* Score summary */}
+                      <div className={`flex items-center justify-between rounded-lg ${cfg.bg} p-4`}>
+                        <div className="flex items-center gap-3">
+                          <StatusIcon className={`h-6 w-6 ${cfg.color}`} />
+                          <div>
+                            <p className={`text-[14px] font-semibold ${cfg.color}`}>{cfg.label}</p>
+                            <p className="text-[12px] text-[#666]">
+                              Score: {compliance.overall_score}/100
+                              {compliance.approval_required && " — Manager approval required"}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => { e.stopPropagation(); handleComplianceCheck(); }}
+                          disabled={complianceLoading}
+                          className="text-[12px]"
+                        >
+                          Re-check
+                        </Button>
+                      </div>
+
+                      {/* Issues list */}
+                      {compliance.issues.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-[11px] font-medium uppercase tracking-wider text-[#888]">Issues</p>
+                          {compliance.issues.map((issue, i) => (
+                            <div key={i} className={`flex gap-2 rounded-md p-2.5 text-[13px] ${
+                              issue.severity === "error" ? "bg-red-50 text-red-800" :
+                              issue.severity === "warning" ? "bg-amber-50 text-amber-800" :
+                              "bg-blue-50 text-blue-800"
+                            }`}>
+                              {issue.severity === "error" ? <XCircle className="h-4 w-4 shrink-0 mt-0.5" /> :
+                               issue.severity === "warning" ? <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" /> :
+                               <Lightbulb className="h-4 w-4 shrink-0 mt-0.5" />}
+                              <div>
+                                <p className="font-medium">{issue.message}</p>
+                                <p className="text-[12px] opacity-80 mt-0.5">{issue.suggestion}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Pricing & Brand */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="rounded-lg bg-[#FAFAFA] p-3">
+                          <p className="text-[11px] font-medium uppercase tracking-wider text-[#888] mb-1">Pricing</p>
+                          <div className="flex items-center gap-1.5">
+                            {compliance.pricing_analysis.within_guardrails ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                            ) : (
+                              <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                            )}
+                            <span className="text-[12px] text-[#555]">{compliance.pricing_analysis.notes}</span>
+                          </div>
+                        </div>
+                        <div className="rounded-lg bg-[#FAFAFA] p-3">
+                          <p className="text-[11px] font-medium uppercase tracking-wider text-[#888] mb-1">Brand</p>
+                          <div className="flex items-center gap-1.5">
+                            {compliance.brand_compliance.score >= 80 ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                            ) : (
+                              <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                            )}
+                            <span className="text-[12px] text-[#555]">{compliance.brand_compliance.notes}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Approval notice */}
+                      {compliance.approval_required && (
+                        <div className="flex gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                          <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                          <div className="text-[13px] text-amber-800">
+                            <p className="font-medium">Manager approval required</p>
+                            <p className="text-[12px] mt-0.5">{compliance.approval_reason}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            )}
+          </Card>
         </div>
 
         <div className="space-y-4">
@@ -148,6 +343,9 @@ export default function ProposalDetailPage() {
               <Button onClick={() => setShowSendForm(!showSendForm)} className="w-full">
                 <Send className="h-4 w-4" />
                 Send Proposal
+                {compliance && compliance.status === "pass" && (
+                  <CheckCircle2 className="h-3.5 w-3.5 ml-1 text-emerald-300" />
+                )}
               </Button>
               <a
                 href={`/p/${proposal.public_token}`}

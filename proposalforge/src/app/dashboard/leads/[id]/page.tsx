@@ -6,11 +6,30 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import {
+  Sparkles,
+  ArrowLeft,
+  TrendingUp,
+  Loader2,
+  ChevronDown,
+  ChevronUp,
+  Lightbulb,
+} from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { AUTH_DISABLED } from "@/lib/auth-config";
-import { DEMO_LEADS } from "@/lib/demo-data";
+import { DEMO_LEADS, DEMO_PROPERTY } from "@/lib/demo-data";
+
+interface PricingRecommendation {
+  recommended_total: number;
+  confidence: "high" | "medium" | "low";
+  reasoning: string;
+  win_probability: number;
+  room_pricing: { item: string; recommended_rate: number; reasoning: string }[];
+  space_pricing: { item: string; recommended_rate: number; reasoning: string }[];
+  catering_pricing: { item: string; recommended_rate: number; reasoning: string }[];
+  competitive_position: string;
+}
 
 export default function LeadDetailPage() {
   const params = useParams();
@@ -20,6 +39,12 @@ export default function LeadDetailPage() {
   const [lead, setLead] = useState<any>(null);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Pricing intelligence state
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const [pricing, setPricing] = useState<PricingRecommendation | null>(null);
+  const [pricingError, setPricingError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchLead() {
@@ -38,18 +63,50 @@ export default function LeadDetailPage() {
     fetchLead();
   }, [params.id, supabase]);
 
+  async function handleGetPricing() {
+    if (!lead) return;
+    setPricingLoading(true);
+    setPricingError(null);
+
+    try {
+      const res = await fetch("/api/v1/agents/pricing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lead_id: lead.id,
+          property_id: lead.property_id,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.data?.pricing) {
+        setPricing(data.data.pricing);
+      } else {
+        setPricingError("Could not generate pricing recommendation.");
+      }
+    } catch {
+      setPricingError("Failed to get pricing recommendation.");
+    }
+    setPricingLoading(false);
+  }
+
   async function handleGenerateProposal() {
     if (!lead) return;
     setGenerating(true);
     setError(null);
 
     try {
+      const customInstructions = pricing
+        ? `Use the following recommended pricing: Total: $${pricing.recommended_total}. ${pricing.reasoning}`
+        : undefined;
+
       const res = await fetch("/api/v1/ai/generate-proposal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           lead_id: lead.id,
           property_id: lead.property_id,
+          custom_instructions: customInstructions,
         }),
       });
 
@@ -79,6 +136,12 @@ export default function LeadDetailPage() {
     lost: "destructive",
   };
 
+  const confidenceColors = {
+    high: "text-emerald-600",
+    medium: "text-amber-600",
+    low: "text-red-600",
+  };
+
   return (
     <div className="max-w-3xl">
       <div className="flex items-center gap-3 mb-6">
@@ -97,6 +160,7 @@ export default function LeadDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Event Details */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Event Details</CardTitle>
@@ -146,17 +210,112 @@ export default function LeadDetailPage() {
             </CardContent>
           </Card>
 
+          {/* Pricing Intelligence — Embedded in Workflow */}
+          <Card className="border-emerald-100">
+            <CardHeader className="cursor-pointer" onClick={() => { setPricingOpen(!pricingOpen); if (!pricing && !pricingLoading) handleGetPricing(); }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">
+                    <TrendingUp className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-[15px]">Pricing Recommendation</CardTitle>
+                    <p className="text-[12px] text-[#888]">AI-powered optimal pricing for this deal</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {pricing && (
+                    <Badge variant="success" className="text-[11px]">
+                      {pricing.win_probability}% win probability
+                    </Badge>
+                  )}
+                  {pricingOpen ? <ChevronUp className="h-4 w-4 text-[#888]" /> : <ChevronDown className="h-4 w-4 text-[#888]" />}
+                </div>
+              </div>
+            </CardHeader>
+            {pricingOpen && (
+              <CardContent>
+                {pricingLoading && (
+                  <div className="flex items-center gap-2 py-4 text-[#666]">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-[13px]">Analyzing historical data and seasonal patterns...</span>
+                  </div>
+                )}
+                {pricingError && (
+                  <div className="text-[13px] text-[#DC2626] py-2">{pricingError}</div>
+                )}
+                {pricing && (
+                  <div className="space-y-4">
+                    {/* Summary */}
+                    <div className="flex items-center justify-between rounded-lg bg-emerald-50 p-4">
+                      <div>
+                        <p className="text-[12px] text-emerald-600 font-medium">Recommended Total</p>
+                        <p className="text-[24px] font-bold text-emerald-700">
+                          {formatCurrency(pricing.recommended_total)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[12px] text-[#888]">Confidence</p>
+                        <p className={`text-[14px] font-semibold capitalize ${confidenceColors[pricing.confidence]}`}>
+                          {pricing.confidence}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Reasoning */}
+                    <div className="flex gap-2 rounded-lg bg-[#FAFAFA] p-3">
+                      <Lightbulb className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+                      <p className="text-[13px] text-[#555]">{pricing.reasoning}</p>
+                    </div>
+
+                    {/* Rate Breakdown */}
+                    {pricing.room_pricing.length > 0 && (
+                      <div>
+                        <p className="text-[11px] font-medium uppercase tracking-wider text-[#888] mb-2">Room Rates</p>
+                        {pricing.room_pricing.map((r, i) => (
+                          <div key={i} className="flex items-center justify-between py-1.5 text-[13px] border-b border-[#f4f4f5] last:border-0">
+                            <span className="text-[#444]">{r.item}</span>
+                            <span className="font-medium">{formatCurrency(r.recommended_rate)}/night</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Competitive Position */}
+                    <p className="text-[12px] text-[#888]">{pricing.competitive_position}</p>
+                  </div>
+                )}
+              </CardContent>
+            )}
+          </Card>
+
+          {/* Generate Proposal — Primary CTA */}
           <Button
             onClick={handleGenerateProposal}
             disabled={generating}
             className="w-full"
             size="lg"
           >
-            <Sparkles className="h-5 w-5" />
-            {generating ? "Generating AI Proposal..." : "Generate AI Proposal"}
+            {generating ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Generating AI Proposal...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-5 w-5" />
+                Generate AI Proposal
+                {pricing && (
+                  <span className="ml-2 text-[12px] opacity-80">
+                    (using recommended pricing)
+                  </span>
+                )}
+              </>
+            )}
           </Button>
         </div>
 
+        {/* Right Column */}
         <div className="space-y-6">
           {lead.contacts && (
             <Card>
